@@ -189,11 +189,6 @@ export type GemBank = {
           isSigner: false;
         },
         {
-          name: "gemRarity";
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
@@ -220,10 +215,6 @@ export type GemBank = {
         },
         {
           name: "bumpGdr";
-          type: "u8";
-        },
-        {
-          name: "bumpRarity";
           type: "u8";
         },
         {
@@ -819,11 +810,6 @@ export const IDL: GemBank = {
           isSigner: false,
         },
         {
-          name: "gemRarity",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
@@ -850,10 +836,6 @@ export const IDL: GemBank = {
         },
         {
           name: "bumpGdr",
-          type: "u8",
-        },
-        {
-          name: "bumpRarity",
           type: "u8",
         },
         {

@@ -9,28 +9,111 @@ import {
   List,
   ListItem,
 } from "react-xnft";
-import { Transaction, SystemProgram } from "@solana/web3.js";
+import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
+import { BN } from "@project-serum/anchor";
 import { THEME } from "../utils/theme";
+import {
+  gemFarmClient,
+  gemBankClient,
+  DEAD_FARM,
+  DEAD_BANK,
+  PID_GEM_BANK,
+} from "../utils";
 
 export function GodDetailScreen({ god }) {
   const publicKey = usePublicKey();
   const connection = useConnection();
 
   const stake = async () => {
-    const tx = new Transaction();
-    tx.add(
-      SystemProgram.transfer({
-        fromPubkey: publicKey,
-        toPubkey: publicKey,
-        lamports: 1000000,
-      })
+    const farmClient = gemFarmClient();
+    const bankClient = gemBankClient();
+
+    const gemMint = new PublicKey(god.metadata.mint.toString());
+    const gemSource = new PublicKey(god.publicKey.toString());
+
+    const [farmer, bumpFarmer] = await PublicKey.findProgramAddress(
+      [Buffer.from("farmer"), DEAD_FARM.toBuffer(), publicKey.toBuffer()],
+      farmClient.programId
     );
-    console.log("plugin fetching most recent blockhash");
+    const [farmAuthority, bumpAuth] = await PublicKey.findProgramAddress(
+      [DEAD_FARM.toBuffer()],
+      farmClient.programId
+    );
+    const [vault, _vaultBump] = await PublicKey.findProgramAddress(
+      [Buffer.from("vault"), DEAD_BANK.toBuffer(), publicKey.toBuffer()],
+      PID_GEM_BANK
+    );
+    const [vaultAuthority, _vaultAuthorityBump] =
+      await PublicKey.findProgramAddress([vault.toBuffer()], PID_GEM_BANK);
+    const [gemBox, gemBoxBump] = await PublicKey.findProgramAddress(
+      [Buffer.from("gem_box"), vault.toBuffer(), gemMint.toBuffer()],
+      PID_GEM_BANK
+    );
+    const [gemDepositReceipt, gemDepositReceiptBump] =
+      await PublicKey.findProgramAddress(
+        [
+          Buffer.from("gem_deposit_receipt"),
+          vault.toBuffer(),
+          gemMint.toBuffer(),
+        ],
+        PID_GEM_BANK
+      );
+
+    const amount = new BN(1);
+
+    const tx = await bankClient.methods
+      .depositGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
+      .accounts({
+        bank: DEAD_BANK,
+        vault,
+        owner: publicKey,
+        authority: vaultAuthority,
+        gemBox,
+        gemDepositReceipt,
+        gemSource,
+        gemMint,
+      })
+      .remainingAccounts([
+        // Mint whitelist proof.
+        {
+          pubkey: new PublicKey("57RFoGkWnm5z5foCngL1oDALbxDp4p1PVTGgbjSoX3wv"),
+          isSigner: false,
+          isWritable: false,
+        },
+        // Gem metadata.
+        {
+          pubkey: new PublicKey("7iXpcxEimXR9WayjnuYFy8QpFZdBfxjk1HGEpGd7rQkD"),
+          isSigner: false,
+          isWritable: false,
+        },
+        // Creator whitelist proof.
+        {
+          pubkey: new PublicKey("3nnpV6qxLYSogWbePgxGFLPDgF8ao9zzCWoQgLoUwjnW"),
+          isSigner: false,
+          isWritable: false,
+        },
+      ])
+      .postInstructions([
+        await farmClient.methods
+          .stake(bumpAuth, bumpFarmer)
+          .accounts({
+            farm: DEAD_FARM,
+            farmAuthority,
+            farmer,
+            identity: publicKey,
+            bank: DEAD_BANK,
+            vault,
+            gemBank: PID_GEM_BANK,
+          })
+          .instruction(),
+      ])
+      .transaction();
+
     const { blockhash } = await connection!.getLatestBlockhash("recent");
-    console.log("plugin got recent blockhash", blockhash);
     tx.recentBlockhash = blockhash;
+
     const signature = await window.anchorUi.send(tx);
-    console.log("test: got signed transaction here", signature);
+    console.log("tx signature", signature);
   };
   const unstake = async () => {
     const tx = new Transaction();
