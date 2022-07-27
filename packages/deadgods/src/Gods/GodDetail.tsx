@@ -30,7 +30,8 @@ export function GodDetailScreen({ god }) {
 		await withAccounts('stake-flash');
   };
   const unstake = async () => {
-		await withAccounts('unstake');
+		// await withAccounts('unstake');
+		await withAccounts('unstake-no-restake');
   };
 
 	const withAccounts = async (method: string) => {
@@ -268,6 +269,65 @@ export function GodDetailScreen({ god }) {
 							bank,
 							vault,
 							gemBank: PID_GEM_BANK,
+						})
+						.instruction(),
+				);
+				return tx;
+			} else if (method === 'unstake-no-restake') {
+				const amount = new BN(1);
+				const receiver = publicKey;
+				const gemDestination = await anchor.utils.token.associatedAddress({
+					mint: gemMint,
+					owner: receiver,
+				});
+				const tx = new Transaction();
+				tx.add(
+					await farmClient
+						.methods
+						.unstake(bumpAuth, bumpTreasury, bumpFarmer)
+						.accounts({
+							farm,
+							farmAuthority,
+							farmTreasury,
+							farmer,
+							identity,
+							bank,
+							vault,
+							gemBank: PID_GEM_BANK,
+						})
+						.instruction()
+				);
+				// Yes this needs to be invoked twice.
+				tx.add(
+					await farmClient
+						.methods
+						.unstake(bumpAuth, bumpTreasury, bumpFarmer)
+						.accounts({
+							farm,
+							farmAuthority,
+							farmTreasury,
+							farmer,
+							identity,
+							bank,
+							vault,
+							gemBank: PID_GEM_BANK,
+						})
+						.instruction()
+				);
+				tx.add(
+					await bankClient
+						.methods
+						.withdrawGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
+						.accounts({
+							bank,
+							vault,
+							owner: publicKey,
+							authority: vaultAuthority,
+							gemBox,
+							gemDepositReceipt,
+							gemDestination, // Receiver ATA for the gem mint.
+							gemMint,
+							receiver,
 						})
 						.instruction(),
 				);
