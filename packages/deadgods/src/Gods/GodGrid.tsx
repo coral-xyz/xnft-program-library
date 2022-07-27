@@ -1,6 +1,4 @@
 import {
-  usePublicKey,
-  useConnection,
   useNavigation,
   View,
   Image,
@@ -9,10 +7,8 @@ import {
   Stack,
   Loading,
 } from "react-xnft";
-import { Transaction, SystemProgram } from "@solana/web3.js";
 import { useDegodTokens } from "../utils";
 import { UnlockIcon, LockIcon } from "../utils/icon";
-import { THEME } from "../utils/theme";
 
 const STATS = "https://api.degods.com/v1/stats";
 
@@ -35,44 +31,10 @@ export function GodGridScreen() {
 }
 
 function GodGrid({ staked, unstaked, isDead }: any) {
-  const publicKey = usePublicKey();
-  const connection = useConnection();
   const nav = useNavigation();
 
   const clickGod = (god: any) => {
     nav.push("detail", { god });
-  };
-  const stakeAll = async () => {
-    const tx = new Transaction();
-    tx.add(
-      SystemProgram.transfer({
-        fromPubkey: publicKey,
-        toPubkey: publicKey,
-        lamports: 1000000,
-      })
-    );
-    console.log("plugin fetching most recent blockhash");
-    const { blockhash } = await connection!.getLatestBlockhash("recent");
-    console.log("plugin got recent blockhash", blockhash);
-    tx.recentBlockhash = blockhash;
-    const signature = await window.anchorUi.send(tx);
-    console.log("test: got signed transaction here", signature);
-  };
-  const unstakeAll = async () => {
-    const tx = new Transaction();
-    tx.add(
-      SystemProgram.transfer({
-        fromPubkey: publicKey,
-        toPubkey: publicKey,
-        lamports: 1000000,
-      })
-    );
-    console.log("plugin fetching most recent blockhash");
-    const { blockhash } = await connection!.getLatestBlockhash("recent");
-    console.log("plugin got recent blockhash", blockhash);
-    tx.recentBlockhash = blockhash;
-    const signature = await window.anchorUi.send(tx);
-    console.log("test: got signed transaction here", signature);
   };
 
   const gods = (staked ?? []).concat(unstaked ?? []);
@@ -161,36 +123,15 @@ function GodGrid({ staked, unstaked, isDead }: any) {
           flexDirection: "column",
         }}
       >
-        <Button
-          onClick={() => stakeAll()}
+        <Text
           style={{
-            width: "100%",
-            backgroundColor: THEME.colors.stake,
-            marginBottom: "8px",
-            height: "48px",
+            fontSize: "12px",
+            textAlign: "center",
           }}
         >
-          Stake All
-        </Button>
-        <Button
-          onClick={() => unstakeAll()}
-          style={{
-            width: "100%",
-            height: "48px",
-            backgroundColor: THEME.colors.unstake,
-          }}
-        >
-          Unstake All
-        </Button>
+          👋 Browse Magic Eden
+        </Text>
       </View>
-      <Text
-        style={{
-          fontSize: "12px",
-          textAlign: "center",
-        }}
-      >
-        👋 Browse Magic Eden
-      </Text>
     </View>
   );
 }
