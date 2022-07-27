@@ -28,19 +28,21 @@ export function GodDetailScreen({ god }) {
     const farmClient = gemFarmClient();
     const bankClient = gemBankClient();
 
+		const farm = DEAD_FARM;
+		const bank = DEAD_BANK;
     const gemMint = new PublicKey(god.metadata.mint.toString());
     const gemSource = new PublicKey(god.publicKey.toString());
 
     const [farmer, bumpFarmer] = await PublicKey.findProgramAddress(
-      [Buffer.from("farmer"), DEAD_FARM.toBuffer(), publicKey.toBuffer()],
+      [Buffer.from("farmer"), farm.toBuffer(), publicKey.toBuffer()],
       farmClient.programId
     );
     const [farmAuthority, bumpAuth] = await PublicKey.findProgramAddress(
-      [DEAD_FARM.toBuffer()],
+      [farm.toBuffer()],
       farmClient.programId
     );
     const [vault, _vaultBump] = await PublicKey.findProgramAddress(
-      [Buffer.from("vault"), DEAD_BANK.toBuffer(), publicKey.toBuffer()],
+      [Buffer.from("vault"), bank.toBuffer(), publicKey.toBuffer()],
       PID_GEM_BANK
     );
     const [vaultAuthority, _vaultAuthorityBump] =
@@ -58,13 +60,29 @@ export function GodDetailScreen({ god }) {
         ],
         PID_GEM_BANK
       );
+		const [gemMetadata] = await PublicKey.findProgramAddress(
+			[
+				Buffer.from("metadata"),
+				(new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')).toBuffer(),
+				gemMint.toBuffer(),
+			],
+			PID_GEM_BANK,
+		);
+		const [mintWhitelistProof] = await PublicKey.findProgramAddress(
+			[
+				Buffer.from("whitelist"),
+				bank.toBuffer(),
+				gemMint.toBuffer(),
+			],
+			PID_GEM_BANK,
+		);
 
     const amount = new BN(1);
 
     const tx = await bankClient.methods
       .depositGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
       .accounts({
-        bank: DEAD_BANK,
+        bank,
         vault,
         owner: publicKey,
         authority: vaultAuthority,
@@ -76,13 +94,13 @@ export function GodDetailScreen({ god }) {
       .remainingAccounts([
         // Mint whitelist proof.
         {
-          pubkey: new PublicKey("57RFoGkWnm5z5foCngL1oDALbxDp4p1PVTGgbjSoX3wv"),
+          pubkey: mintWhitelistProof,
           isSigner: false,
           isWritable: false,
         },
         // Gem metadata.
         {
-          pubkey: new PublicKey("7iXpcxEimXR9WayjnuYFy8QpFZdBfxjk1HGEpGd7rQkD"),
+          pubkey: gemMetadata,
           isSigner: false,
           isWritable: false,
         },
@@ -97,11 +115,11 @@ export function GodDetailScreen({ god }) {
         await farmClient.methods
           .stake(bumpAuth, bumpFarmer)
           .accounts({
-            farm: DEAD_FARM,
+            farm,
             farmAuthority,
             farmer,
             identity: publicKey,
-            bank: DEAD_BANK,
+            bank,
             vault,
             gemBank: PID_GEM_BANK,
           })
