@@ -26,21 +26,21 @@ export function GodDetailScreen({ god }) {
   const connection = useConnection();
 
   const stake = async () => {
-		//		await withAccounts('stake');
-		await withAccounts('stake-flash');
+    //		await withAccounts('stake');
+    await withAccounts("stake-flash");
   };
   const unstake = async () => {
-		// await withAccounts('unstake');
-		await withAccounts('unstake-no-restake');
+    // await withAccounts('unstake');
+    await withAccounts("unstake-no-restake");
   };
 
-	const withAccounts = async (method: string) => {
+  const withAccounts = async (method: string) => {
     const farmClient = gemFarmClient();
     const bankClient = gemBankClient();
 
-		const identity = publicKey;
-		const farm = DEAD_FARM;
-		const bank = DEAD_BANK;
+    const identity = publicKey;
+    const farm = DEAD_FARM;
+    const bank = DEAD_BANK;
     const gemMint = new PublicKey(god.metadata.mint.toString());
     const gemSource = new PublicKey(god.publicKey.toString());
 
@@ -71,278 +71,265 @@ export function GodDetailScreen({ god }) {
         ],
         PID_GEM_BANK
       );
-		const [gemMetadata] = await PublicKey.findProgramAddress(
-			[
-				Buffer.from("metadata"),
-				(new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')).toBuffer(),
-				gemMint.toBuffer(),
-			],
-			PID_GEM_BANK,
-		);
-		const [mintWhitelistProof] = await PublicKey.findProgramAddress(
-			[
-				Buffer.from("whitelist"),
-				bank.toBuffer(),
-				gemMint.toBuffer(),
-			],
-			PID_GEM_BANK,
-		);
-		const [farmTreasury, bumpTreasury] = await PublicKey.findProgramAddress(
-			[
-				Buffer.from("treasury"),
-				farm.toBuffer(),
-			],
-			farmClient.programId,
-		);
+    const [gemMetadata] = await PublicKey.findProgramAddress(
+      [
+        Buffer.from("metadata"),
+        new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").toBuffer(),
+        gemMint.toBuffer(),
+      ],
+      PID_GEM_BANK
+    );
+    const [mintWhitelistProof] = await PublicKey.findProgramAddress(
+      [Buffer.from("whitelist"), bank.toBuffer(), gemMint.toBuffer()],
+      PID_GEM_BANK
+    );
+    const [farmTreasury, bumpTreasury] = await PublicKey.findProgramAddress(
+      [Buffer.from("treasury"), farm.toBuffer()],
+      farmClient.programId
+    );
 
-		const tx = await (async () => {
-			if (method === 'stake') {
-				const amount = new BN(1);
+    const tx = await (async () => {
+      if (method === "stake") {
+        const amount = new BN(1);
 
-				return await bankClient
-					.methods
-					.depositGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
-					.accounts({
-						bank,
-						vault,
-						owner: publicKey,
-						authority: vaultAuthority,
-						gemBox,
-						gemDepositReceipt,
-						gemSource,
-						gemMint,
-					})
-					.remainingAccounts([
-						// Mint whitelist proof.
-						{
-							pubkey: mintWhitelistProof,
-							isSigner: false,
-							isWritable: false,
-						},
-						// Gem metadata.
-						{
-							pubkey: gemMetadata,
-							isSigner: false,
-							isWritable: false,
-						},
-						// Creator whitelist proof.
-						{
-							pubkey: new PublicKey("3nnpV6qxLYSogWbePgxGFLPDgF8ao9zzCWoQgLoUwjnW"),
-							isSigner: false,
-							isWritable: false,
-						},
-					])
-					.postInstructions([
-						await farmClient
-							.methods
-							.stake(bumpAuth, bumpFarmer)
-							.accounts({
-								farm,
-								farmAuthority,
-								farmer,
-								identity,
-								bank,
-								vault,
-								gemBank: PID_GEM_BANK,
-							})
-							.instruction(),
-					])
-					.transaction();
-			} else if (method === 'stake-flash') {
-				const amount = new BN(1);
+        return await bankClient.methods
+          .depositGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
+          .accounts({
+            bank,
+            vault,
+            owner: publicKey,
+            authority: vaultAuthority,
+            gemBox,
+            gemDepositReceipt,
+            gemSource,
+            gemMint,
+          })
+          .remainingAccounts([
+            // Mint whitelist proof.
+            {
+              pubkey: mintWhitelistProof,
+              isSigner: false,
+              isWritable: false,
+            },
+            // Gem metadata.
+            {
+              pubkey: gemMetadata,
+              isSigner: false,
+              isWritable: false,
+            },
+            // Creator whitelist proof.
+            {
+              pubkey: new PublicKey(
+                "3nnpV6qxLYSogWbePgxGFLPDgF8ao9zzCWoQgLoUwjnW"
+              ),
+              isSigner: false,
+              isWritable: false,
+            },
+          ])
+          .postInstructions([
+            await farmClient.methods
+              .stake(bumpAuth, bumpFarmer)
+              .accounts({
+                farm,
+                farmAuthority,
+                farmer,
+                identity,
+                bank,
+                vault,
+                gemBank: PID_GEM_BANK,
+              })
+              .instruction(),
+          ])
+          .transaction();
+      } else if (method === "stake-flash") {
+        const amount = new BN(1);
 
-				return await farmClient
-					.methods
-					.flashDeposit(
-						bumpFarmer,
-						vaultAuthorityBump,
-						gemBoxBump,
-						gemDepositReceiptBump,
-						amount,
-					)
-					.accounts({
-						farm,
-						farmAuthority,
-						farmer,
-						identity,
-						bank,
-						vault,
-						vaultAuthority,
-						gemBox,
-						gemDepositReceipt,
-						gemSource,
-						gemMint,
-						//						tokenProgram
-						//						systemProgram,
-						//						tokenProgram,
-						//						rent,
-						gemBank: PID_GEM_BANK,
-					})
-					.remainingAccounts([
-						// Mint whitelist proof.
-						{
-							pubkey: mintWhitelistProof,
-							isSigner: false,
-							isWritable: false,
-						},
-						// Gem metadata.
-						{
-							pubkey: gemMetadata,
-							isSigner: false,
-							isWritable: false,
-						},
-						// Creator whitelist proof.
-						{
-							pubkey: new PublicKey("3nnpV6qxLYSogWbePgxGFLPDgF8ao9zzCWoQgLoUwjnW"),
-							isSigner: false,
-							isWritable: false,
-						},
-					])
-					.transaction();
-			} else if (method === 'unstake') {
-				const amount = new BN(1);
-				const receiver = publicKey;
-				const gemDestination = await anchor.utils.token.associatedAddress({
-					mint: gemMint,
-					owner: receiver,
-				});
-				const tx = new Transaction();
-				tx.add(
-					await farmClient
-						.methods
-						.unstake(bumpAuth, bumpTreasury, bumpFarmer)
-						.accounts({
-							farm,
-							farmAuthority,
-							farmTreasury,
-							farmer,
-							identity,
-							bank,
-							vault,
-							gemBank: PID_GEM_BANK,
-						})
-						.instruction()
-				);
-				// Yes this needs to be invoked twice.
-				tx.add(
-					await farmClient
-						.methods
-						.unstake(bumpAuth, bumpTreasury, bumpFarmer)
-						.accounts({
-							farm,
-							farmAuthority,
-							farmTreasury,
-							farmer,
-							identity,
-							bank,
-							vault,
-							gemBank: PID_GEM_BANK,
-						})
-						.instruction()
-				);
-				tx.add(
-					await bankClient
-						.methods
-						.withdrawGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
-						.accounts({
-							bank,
-							vault,
-							owner: publicKey,
-							authority: vaultAuthority,
-							gemBox,
-							gemDepositReceipt,
-							gemDestination, // Receiver ATA for the gem mint.
-							gemMint,
-							receiver,
-						})
-						.instruction(),
-				);
-				tx.add(
-					await farmClient
-						.methods
-						.stake(bumpAuth, bumpFarmer)
-						.accounts({
-							farm,
-							farmAuthority,
-							farmer,
-							identity,
-							bank,
-							vault,
-							gemBank: PID_GEM_BANK,
-						})
-						.instruction(),
-				);
-				return tx;
-			} else if (method === 'unstake-no-restake') {
-				const amount = new BN(1);
-				const receiver = publicKey;
-				const gemDestination = await anchor.utils.token.associatedAddress({
-					mint: gemMint,
-					owner: receiver,
-				});
-				const tx = new Transaction();
-				tx.add(
-					await farmClient
-						.methods
-						.unstake(bumpAuth, bumpTreasury, bumpFarmer)
-						.accounts({
-							farm,
-							farmAuthority,
-							farmTreasury,
-							farmer,
-							identity,
-							bank,
-							vault,
-							gemBank: PID_GEM_BANK,
-						})
-						.instruction()
-				);
-				// Yes this needs to be invoked twice.
-				tx.add(
-					await farmClient
-						.methods
-						.unstake(bumpAuth, bumpTreasury, bumpFarmer)
-						.accounts({
-							farm,
-							farmAuthority,
-							farmTreasury,
-							farmer,
-							identity,
-							bank,
-							vault,
-							gemBank: PID_GEM_BANK,
-						})
-						.instruction()
-				);
-				tx.add(
-					await bankClient
-						.methods
-						.withdrawGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
-						.accounts({
-							bank,
-							vault,
-							owner: publicKey,
-							authority: vaultAuthority,
-							gemBox,
-							gemDepositReceipt,
-							gemDestination, // Receiver ATA for the gem mint.
-							gemMint,
-							receiver,
-						})
-						.instruction(),
-				);
-				return tx;
-			} else {
-				throw new Error('invalid method');
-			}
-		})();
+        return await farmClient.methods
+          .flashDeposit(
+            bumpFarmer,
+            vaultAuthorityBump,
+            gemBoxBump,
+            gemDepositReceiptBump,
+            amount
+          )
+          .accounts({
+            farm,
+            farmAuthority,
+            farmer,
+            identity,
+            bank,
+            vault,
+            vaultAuthority,
+            gemBox,
+            gemDepositReceipt,
+            gemSource,
+            gemMint,
+            //						tokenProgram
+            //						systemProgram,
+            //						tokenProgram,
+            //						rent,
+            gemBank: PID_GEM_BANK,
+          })
+          .remainingAccounts([
+            // Mint whitelist proof.
+            {
+              pubkey: mintWhitelistProof,
+              isSigner: false,
+              isWritable: false,
+            },
+            // Gem metadata.
+            {
+              pubkey: gemMetadata,
+              isSigner: false,
+              isWritable: false,
+            },
+            // Creator whitelist proof.
+            {
+              pubkey: new PublicKey(
+                "3nnpV6qxLYSogWbePgxGFLPDgF8ao9zzCWoQgLoUwjnW"
+              ),
+              isSigner: false,
+              isWritable: false,
+            },
+          ])
+          .transaction();
+      } else if (method === "unstake") {
+        const amount = new BN(1);
+        const receiver = publicKey;
+        const gemDestination = await anchor.utils.token.associatedAddress({
+          mint: gemMint,
+          owner: receiver,
+        });
+        const tx = new Transaction();
+        tx.add(
+          await farmClient.methods
+            .unstake(bumpAuth, bumpTreasury, bumpFarmer)
+            .accounts({
+              farm,
+              farmAuthority,
+              farmTreasury,
+              farmer,
+              identity,
+              bank,
+              vault,
+              gemBank: PID_GEM_BANK,
+            })
+            .instruction()
+        );
+        // Yes this needs to be invoked twice.
+        tx.add(
+          await farmClient.methods
+            .unstake(bumpAuth, bumpTreasury, bumpFarmer)
+            .accounts({
+              farm,
+              farmAuthority,
+              farmTreasury,
+              farmer,
+              identity,
+              bank,
+              vault,
+              gemBank: PID_GEM_BANK,
+            })
+            .instruction()
+        );
+        tx.add(
+          await bankClient.methods
+            .withdrawGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
+            .accounts({
+              bank,
+              vault,
+              owner: publicKey,
+              authority: vaultAuthority,
+              gemBox,
+              gemDepositReceipt,
+              gemDestination, // Receiver ATA for the gem mint.
+              gemMint,
+              receiver,
+            })
+            .instruction()
+        );
+        tx.add(
+          await farmClient.methods
+            .stake(bumpAuth, bumpFarmer)
+            .accounts({
+              farm,
+              farmAuthority,
+              farmer,
+              identity,
+              bank,
+              vault,
+              gemBank: PID_GEM_BANK,
+            })
+            .instruction()
+        );
+        return tx;
+      } else if (method === "unstake-no-restake") {
+        const amount = new BN(1);
+        const receiver = publicKey;
+        const gemDestination = await anchor.utils.token.associatedAddress({
+          mint: gemMint,
+          owner: receiver,
+        });
+        const tx = new Transaction();
+        tx.add(
+          await farmClient.methods
+            .unstake(bumpAuth, bumpTreasury, bumpFarmer)
+            .accounts({
+              farm,
+              farmAuthority,
+              farmTreasury,
+              farmer,
+              identity,
+              bank,
+              vault,
+              gemBank: PID_GEM_BANK,
+            })
+            .instruction()
+        );
+        // Yes this needs to be invoked twice.
+        tx.add(
+          await farmClient.methods
+            .unstake(bumpAuth, bumpTreasury, bumpFarmer)
+            .accounts({
+              farm,
+              farmAuthority,
+              farmTreasury,
+              farmer,
+              identity,
+              bank,
+              vault,
+              gemBank: PID_GEM_BANK,
+            })
+            .instruction()
+        );
+        tx.add(
+          await bankClient.methods
+            .withdrawGem(bumpAuth, gemBoxBump, gemDepositReceiptBump, amount)
+            .accounts({
+              bank,
+              vault,
+              owner: publicKey,
+              authority: vaultAuthority,
+              gemBox,
+              gemDepositReceipt,
+              gemDestination, // Receiver ATA for the gem mint.
+              gemMint,
+              receiver,
+            })
+            .instruction()
+        );
+        return tx;
+      } else {
+        throw new Error("invalid method");
+      }
+    })();
 
     const { blockhash } = await connection!.getLatestBlockhash("recent");
     tx.recentBlockhash = blockhash;
 
     const signature = await window.anchorUi.send(tx);
     console.log("tx signature", signature);
-	};
+  };
 
   return (
     <View
