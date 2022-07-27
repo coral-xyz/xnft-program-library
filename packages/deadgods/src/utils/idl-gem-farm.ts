@@ -623,11 +623,6 @@ export type GemFarm = {
           isSigner: false;
         },
         {
-          name: "gemRarity";
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
@@ -663,10 +658,6 @@ export type GemFarm = {
         },
         {
           name: "bumpGdr";
-          type: "u8";
-        },
-        {
-          name: "bumpRarity";
           type: "u8";
         },
         {
@@ -2181,11 +2172,6 @@ export const IDL: GemFarm = {
           isSigner: false,
         },
         {
-          name: "gemRarity",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
@@ -2221,10 +2207,6 @@ export const IDL: GemFarm = {
         },
         {
           name: "bumpGdr",
-          type: "u8",
-        },
-        {
-          name: "bumpRarity",
           type: "u8",
         },
         {

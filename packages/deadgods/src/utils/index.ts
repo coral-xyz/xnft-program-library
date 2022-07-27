@@ -198,7 +198,7 @@ export const DEGODS_ICON_DATA =
 const PID_GEM_FARM = new PublicKey(
   "FQzYycoqRjmZTgCcTTAkzceH2Ju8nzNLa5d78K3yAhVW"
 );
-const PID_GEM_BANK = new PublicKey(
+export const PID_GEM_BANK = new PublicKey(
   "6VJpeYFy87Wuv4KvwqD5gyFBTkohqZTqs6LgbCJ8tDBA"
 );
 export const FARM = new PublicKey(
@@ -209,4 +209,6 @@ export const DEAD_FARM = new PublicKey(
 );
 
 const BANK = new PublicKey("EhRihAPeaR2jC9PKtyRcKzVwXRisykjt72ieYS232ERM");
-const DEAD_BANK = new PublicKey("4iDK8akg8RHg7PguBTTsJcQbHo5iHKzkBJLk8MSvnENA");
+export const DEAD_BANK = new PublicKey(
+  "4iDK8akg8RHg7PguBTTsJcQbHo5iHKzkBJLk8MSvnENA"
+);
