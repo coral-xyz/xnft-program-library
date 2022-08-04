@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import ReactXnft, { usePublicKey, useConnection } from "react-xnft";
 import { PublicKey, Connection } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
-import { customSplTokenAccounts } from "@coral-xyz/common";
 import { IDL as IDL_GEM_BANK, GemBank } from "./idl-gem-bank";
 import { IDL as IDL_GEM_FARM, GemFarm } from "./idl-gem-farm";
 
@@ -101,7 +100,7 @@ async function fetchTokenAccounts(
   wallet: PublicKey,
   connection: Connection
 ): Promise<any> {
-  const resp = await customSplTokenAccounts(connection, wallet);
+  const resp = await window.anchorUi.connection.customSplTokenAccounts(wallet);
   const tokens = resp.nftMetadata
     .map((m) => m[1])
     .filter((t) => t.tokenMetaUriData.name.startsWith("DeGod"));
@@ -163,8 +162,7 @@ async function fetchStakedTokenAccountsInner(
     [vaultPubkey.toBuffer()],
     PID_GEM_BANK
   );
-  const tokenAccounts = await customSplTokenAccounts(
-    connection,
+  const tokenAccounts = await window.anchorUi.connection.customSplTokenAccounts(
     vaultAuthority
   );
   const newResp = tokenAccounts.nftMetadata
