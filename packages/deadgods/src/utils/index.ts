@@ -9,7 +9,7 @@ import { IDL as IDL_GEM_FARM, GemFarm } from "./idl-gem-farm";
 // On connection to the host environment, warm the cache.
 //
 ReactXnft.events.on("connect", () => {
-  fetchDegodTokens(window.anchorUi.publicKey, window.anchorUi.connection);
+  fetchDegodTokens(window.xnft.publicKey, window.xnft.connection);
 });
 
 export function useDegodTokens() {
@@ -100,7 +100,7 @@ async function fetchTokenAccounts(
   wallet: PublicKey,
   connection: Connection
 ): Promise<any> {
-  const resp = await window.anchorUi.connection.customSplTokenAccounts(wallet);
+  const resp = await window.xnft.connection.customSplTokenAccounts(wallet);
   const tokens = resp.nftMetadata
     .map((m) => m[1])
     .filter((t) => t.tokenMetaUriData.name.startsWith("DeGod"));
@@ -162,7 +162,7 @@ async function fetchStakedTokenAccountsInner(
     [vaultPubkey.toBuffer()],
     PID_GEM_BANK
   );
-  const tokenAccounts = await window.anchorUi.connection.customSplTokenAccounts(
+  const tokenAccounts = await window.xnft.connection.customSplTokenAccounts(
     vaultAuthority
   );
   const newResp = tokenAccounts.nftMetadata

@@ -327,7 +327,7 @@ export function GodDetailScreen({ god }) {
     const { blockhash } = await connection!.getLatestBlockhash("recent");
     tx.recentBlockhash = blockhash;
 
-    const signature = await window.anchorUi.send(tx);
+    const signature = await window.xnft.send(tx);
     console.log("tx signature", signature);
   };
 

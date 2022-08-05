@@ -124,7 +124,7 @@ function Header({ isDead, estimatedRewards }: any) {
             }),
           })
           .transaction();
-        const signature = await window.anchorUi.send(tx);
+        const signature = await window.xnft.send(tx);
         console.log("tx signature", signature);
       } catch (err) {
         console.log("err here", err);
