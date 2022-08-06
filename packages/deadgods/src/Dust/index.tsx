@@ -103,7 +103,7 @@ function Header({ isDead, estimatedRewards }: any) {
       );
 
       try {
-        const tx = await farmClient.methods
+        const signature = await farmClient.methods
           .claim(bumpAuth, bumpFarmer, bumpPotA, bumpPotB)
           .accounts({
             farm: DEAD_FARM,
@@ -123,9 +123,8 @@ function Header({ isDead, estimatedRewards }: any) {
               owner: publicKey,
             }),
           })
-          .transaction();
-        const signature = await window.xnft.send(tx);
-        console.log("tx signature", signature);
+          .rpc();
+        console.log("rpc: tx signature", signature);
       } catch (err) {
         console.log("err here", err);
       }
