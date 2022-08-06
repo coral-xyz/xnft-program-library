@@ -17,17 +17,24 @@ export function Defi() {
           fontSize: "18px",
         }}
       >
-        DeFi Monitor
+        DeFi
       </Text>
 
-      <View style={{ margin: "0px 20px 0px 20px", backgroundColor: "none", paddingBottom: "10px" }}>
+      <View
+        style={{
+          margin: "0px 20px 0px 20px",
+          backgroundColor: "none",
+          paddingBottom: "10px",
+        }}
+      >
         {data &&
           data.data.map((item, index) => {
             return (
               <View
                 style={{
                   padding: "10px 20px",
-                  boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 5px 8px 10px -6px #0f766e",
+                  boxShadow:
+                    "0 10px 15px -3px rgb(0 0 0 / 0.1), 5px 8px 10px -6px #0f766e",
                   backgroundColor: "#111827",
                   marginBottom: "25px",
                   marginTop: "25px",
@@ -43,7 +50,13 @@ export function Defi() {
                     marginTop: "5px",
                   }}
                 >
-                  <View style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "10px",
+                    }}
+                  >
                     <Image
                       style={{
                         width: "25px",
@@ -51,7 +64,10 @@ export function Defi() {
                       }}
                       src={item.icon}
                     />
-                    <Text>{item.source.charAt(0).toUpperCase() + item.source.slice(1)}</Text>
+                    <Text>
+                      {item.source.charAt(0).toUpperCase() +
+                        item.source.slice(1)}
+                    </Text>
                   </View>
                   <Text>{index + 1}</Text>
                 </View>

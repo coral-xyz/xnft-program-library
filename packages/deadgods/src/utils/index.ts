@@ -167,7 +167,9 @@ async function fetchStakedTokenAccountsInner(
   );
   const newResp = tokenAccounts.nftMetadata
     .map((m) => m[1])
-    .filter((t) => !t.tokenMetaUriData.name.startsWith("DegodsGiveaway"));
+    .filter((t) => !t.tokenMetaUriData.name.startsWith("DegodsGiveaway") && !t.tokenMetaUriData.name.startsWith('Rare'));
+
+	console.log("NEW RESP HERE", newResp);
 
   return newResp;
 }

@@ -35,8 +35,16 @@ export function App() {
           };
         }}
       >
-        <Tab.Screen name="monitor" disableLabel={true} component={() => <Monitor />} />
-        <Tab.Screen name="defi" disableLabel={true} component={() => <Defi />} />
+        <Tab.Screen
+          name="monitor"
+          disableLabel={true}
+          component={() => <Monitor />}
+        />
+        <Tab.Screen
+          name="defi"
+          disableLabel={true}
+          component={() => <Defi />}
+        />
         <Tab.Screen name="nft" disableLabel={true} component={() => <NFT />} />
       </Tab.Navigator>
     </View>

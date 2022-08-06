@@ -376,6 +376,7 @@ export function GodDetailScreen({ god }) {
             marginTop: "24px",
             marginBottom: "24px",
             backgroundColor: THEME.colors.unstake,
+						color: THEME.colors.text,
           }}
           onClick={() => unstake()}
         >

@@ -6,7 +6,10 @@ const fetcher = (url) => fetch(url).then((r) => r.json());
 
 export function Monitor() {
   const { data } = useSWR("https://api.solscan.io/chaininfo", fetcher);
-  const { data: pingData } = useSWR("https://ping.solana.com/mainnet-beta/last6hours", fetcher);
+  const { data: pingData } = useSWR(
+    "https://ping.solana.com/mainnet-beta/last6hours",
+    fetcher
+  );
 
   return (
     <View style={{ height: "100%" }}>
@@ -19,7 +22,7 @@ export function Monitor() {
           fontSize: "18px",
         }}
       >
-        Network Monitor
+        Network
       </Text>
 
       <View
@@ -39,7 +42,8 @@ export function Monitor() {
             borderRadius: "12px",
             paddingTop: "10px",
             paddingBottom: "10px",
-            boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 5px 8px 10px -6px #0f766e",
+            boxShadow:
+              "0 10px 15px -3px rgb(0 0 0 / 0.1), 5px 8px 10px -6px #0f766e",
           }}
         >
           <Text
@@ -136,7 +140,10 @@ export function Monitor() {
                   >
                     {data?.data.epochInfo.startSlot}
                   </Text>
-                  <Text style={{ fontSize: "16px", color: "#9ca3af" }}> to </Text>
+                  <Text style={{ fontSize: "16px", color: "#9ca3af" }}>
+                    {" "}
+                    to{" "}
+                  </Text>
                   <Text
                     style={{
                       fontSize: "18px",
@@ -161,7 +168,8 @@ export function Monitor() {
             borderRadius: "12px",
             paddingTop: "10px",
             paddingBottom: "10px",
-            boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 5px 8px 10px -6px #0f766e",
+            boxShadow:
+              "0 10px 15px -3px rgb(0 0 0 / 0.1), 5px 8px 10px -6px #0f766e",
           }}
         >
           <Text
