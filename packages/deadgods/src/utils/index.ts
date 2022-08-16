@@ -77,11 +77,11 @@ export function useEstimatedRewards() {
 }
 
 export function gemBankClient(): Program<GemBank> {
-  return new Program<GemBank>(IDL_GEM_BANK, PID_GEM_BANK, window.backpack);
+  return new Program<GemBank>(IDL_GEM_BANK, PID_GEM_BANK, window.xnft);
 }
 
 export function gemFarmClient(): Program<GemFarm> {
-  return new Program<GemFarm>(IDL_GEM_FARM, PID_GEM_FARM, window.backpack);
+  return new Program<GemFarm>(IDL_GEM_FARM, PID_GEM_FARM, window.xnft);
 }
 
 export async function fetchDegodTokens(
