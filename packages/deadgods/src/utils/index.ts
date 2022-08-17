@@ -212,3 +212,7 @@ const BANK = new PublicKey("EhRihAPeaR2jC9PKtyRcKzVwXRisykjt72ieYS232ERM");
 export const DEAD_BANK = new PublicKey(
   "4iDK8akg8RHg7PguBTTsJcQbHo5iHKzkBJLk8MSvnENA"
 );
+
+export const METADATA_PID = new PublicKey(
+	"metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
+);

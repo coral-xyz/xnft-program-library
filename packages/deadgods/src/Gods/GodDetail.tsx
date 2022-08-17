@@ -9,7 +9,7 @@ import {
   List,
   ListItem,
 } from "react-xnft";
-import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import { BN } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { THEME } from "../utils/theme";
@@ -19,12 +19,12 @@ import {
   DEAD_FARM,
   DEAD_BANK,
   PID_GEM_BANK,
+	METADATA_PID,
 } from "../utils";
 
 export function GodDetailScreen({ god }) {
   const publicKey = usePublicKey();
   const connection = useConnection();
-
   const stake = async () => {
     //		await withAccounts('stake');
     await withAccounts("stake-flash");
@@ -77,7 +77,7 @@ export function GodDetailScreen({ god }) {
         new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").toBuffer(),
         gemMint.toBuffer(),
       ],
-      PID_GEM_BANK
+      METADATA_PID,
     );
     const [mintWhitelistProof] = await PublicKey.findProgramAddress(
       [Buffer.from("whitelist"), bank.toBuffer(), gemMint.toBuffer()],
@@ -393,6 +393,7 @@ export function GodDetailScreen({ god }) {
             marginTop: "24px",
             marginBottom: "24px",
             backgroundColor: THEME.colors.stake,
+						color: THEME.colors.text,
           }}
           onClick={() => stake()}
         >
