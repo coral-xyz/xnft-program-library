@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ReactXnft, { usePublicKey, useConnection } from "react-xnft";
+import ReactXnft, { LocalStorage, usePublicKey, useConnection } from "react-xnft";
 import { PublicKey, Connection } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
 import { IDL as IDL_GEM_BANK, GemBank } from "./idl-gem-bank";
@@ -114,7 +114,7 @@ async function fetchStakedTokenAccounts(
 ): Promise<any> {
   const url = connection.rpcEndpoint;
   const cacheKey = `${url}:${isDead}:${wallet.toString()}`;
-  const val = window.localStorage.getItem(cacheKey);
+  const val = LocalStorage.get(cacheKey);
 
   //
   // Only fetch this once a minute.
@@ -134,7 +134,7 @@ async function fetchStakedTokenAccounts(
     wallet,
     connection
   );
-  window.localStorage.setItem(
+  LocalStorage.set(
     cacheKey,
     JSON.stringify({
       ts: Date.now(),
