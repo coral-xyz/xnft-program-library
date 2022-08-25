@@ -1,4 +1,4 @@
-import AnchorUi, { Tab, View } from "react-xnft";
+import ReactXnft, { Tab, View } from "react-xnft";
 import { DollarIcon, MonitorIcon, NFTIcon } from "./utils/icons";
 import { Monitor } from "./components/monitor";
 import { Defi } from "./components/defi";
@@ -7,7 +7,7 @@ import { NFT } from "./components/nft";
 //
 // On connection to the host environment, warm the cache.
 //
-AnchorUi.events.on("connect", () => {
+ReactXnft.events.on("connect", () => {
   //
 });
 
