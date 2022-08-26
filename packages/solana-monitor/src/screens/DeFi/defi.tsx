@@ -13,8 +13,12 @@ export function DeFiScreen() {
     const g = data ? `${data[data.length-1]['totalLiquidityUSD'] > data[data.length-2]['totalLiquidityUSD'] ? "#39D98A" : "#FF5C5C"}` : "";
   
     const protocol_data = useSWR("https://api.llama.fi/protocols", fetcher);
-    const filtered = protocol_data?.data?.filter((data, index) => data.chain === "Solana" && data.tvl > 1000);
+    const filtered = protocol_data?.data?.filter((data, index) => data.chain === "Solana" && data.tvl > 100000);
     console.log("protocol data filtered", filtered);
+
+
+    const sol_details = useSWR("https://api.coingecko.com/api/v3/coins/solana", fetcher);
+    console.log("protocol data filtered", sol_details?.data);
 
   const convertToInternationalCurrencySystem = (labelValue) => {
 
@@ -63,6 +67,8 @@ export function DeFiScreen() {
       >
         {/* TVL */}
         <View style={{flex: "1", paddingTop: "11px", paddingLeft:"12px", paddingRight: "11px", width: "166px", marginLeft: "16px", marginTop: "20px", paddingBottom: "16px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.04)", backdropFilter: "blur(30px)", borderRadius: "8px"}}>
+        <View style={{position: "fixed", marginTop: "5px", height: "136px", width: "140px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
+
           <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
             Total Value Locked
           </Text>
@@ -79,6 +85,8 @@ export function DeFiScreen() {
 
         {/* Protocols */}
         <View style={{flex: "1", paddingTop: "11px", paddingLeft:"12px", paddingRight: "11px", width: "166px", marginLeft: "16px", marginTop: "20px", paddingBottom: "16px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.04)", backdropFilter: "blur(30px)", borderRadius: "8px"}}>
+        <View style={{position: "fixed", marginTop: "5px", height: "136px", width: "140px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
+
           <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
             Protocols
           </Text>
@@ -101,37 +109,40 @@ export function DeFiScreen() {
       >
         {/* SOL Price */}
         <View style={{flex: "1", paddingTop: "11px", paddingLeft:"12px", paddingRight: "11px", width: "166px", marginLeft: "16px", marginTop: "20px", paddingBottom: "16px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.04)", backdropFilter: "blur(30px)", borderRadius: "8px"}}>
+          <View style={{position: "fixed", marginTop: "5px", height: "136px", width: "140px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
           <Text style={{display: "flex", fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
             SOL Price
-            <View style={{marginLeft: "5px", background: "rgba(255, 255, 255, 0.04)", borderRadius:"6px", height: "24px", width: "67px"}}>
-                <Text style={{marginLeft: "5px", fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "#0DD3E2"}}>Rank #9</Text>
-            </View>
+            {/* <View style={{marginLeft: "5px", background: "rgba(255, 255, 255, 0.04)", borderRadius:"6px", height: "24px", width: "67px"}}>
+                <Text style={{marginLeft: "5px", fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "#0DD3E2"}}>Rank #{sol_details?.data?.market_cap_rank}</Text>
+            </View> */}
           </Text>
           <View style={{marginTop: "11px", width: "100%", height: "1px", background: "rgba(255, 255, 255, 0.06)"}}></View>
           <View style={{display: "flex", flexDirection: "row", marginTop: "12px"}}>
             <Text style={{fontWeight: "700", fontSize: "18px", lineHeight: "150%", color: "white"}}>
-              $35.74
+              ${sol_details?.data?.market_data.current_price.usd}
             </Text>
-            <Text style={{alignItems: "center", textAlign: "center", fontWeight: "500", marginTop: "5px", marginLeft:"4px", fontSize: "12px", lineHeight: "150%", color: "#39D98A"}}>
-              2.37%
+            <Text style={{alignItems: "center", textAlign: "center", fontWeight: "500", marginTop: "5px", marginLeft:"4px", fontSize: "12px", lineHeight: "150%", color: `${sol_details?.data?.market_data?.price_change_24h.toString().includes("-") ? "#FF5C5C" : "39D98A"}`}}>
+              {sol_details?.data?.market_data.price_change_24h.toString().slice(0,4)}%
             </Text>
           </View>
         </View>
 
         {/* Mcap */}
         <View style={{flex: "1", paddingTop: "11px", paddingLeft:"12px", paddingRight: "11px", width: "166px", marginLeft: "16px", marginTop: "20px", paddingBottom: "16px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.04)", backdropFilter: "blur(30px)", borderRadius: "8px"}}>
+        <View style={{position: "fixed", marginTop: "5px", height: "136px", width: "140px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
+
           <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
             Marketcap
           </Text>
           <View style={{marginTop: "11px", width: "100%", height: "1px", background: "rgba(255, 255, 255, 0.06)"}}></View>
           <View style={{display: "flex", flexDirection: "row", marginTop: "12px"}}>
             <Text style={{fontWeight: "700", fontSize: "18px", lineHeight: "150%", color: "white"}}>
-              $12.5B
+              ${convertToInternationalCurrencySystem(sol_details?.data?.market_data.market_cap.usd)}
             </Text>
             
           </View>
-        </View>
       </View>
+      </View> 
       <Text style={{fontStyle:"normal", fontWeight:"700", fontSize: "18px", lineHeight: "150%", color: "#FFFFFF", marginTop: "20px", marginLeft: "16px"}}>Protocols</Text>
       {/* <TextField style={{marginTop: "10px", marginLeft: "16px", width: "365px"}} />   */}
       <View style={{display: "flex", flexDirection: "row", marginTop: "8px", marginLeft: "16px"}}>

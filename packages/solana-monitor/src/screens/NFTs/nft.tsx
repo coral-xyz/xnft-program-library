@@ -56,6 +56,8 @@ export function NFTScreen() {
           paddingBottom: "10px",
         }}
       >
+            <View style={{position: "absolute", marginTop: "85px", marginLeft: "100px", height: "256px", width: "250px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
+
         {data &&
           data.data.map((item, index) => {
             return (

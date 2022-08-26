@@ -16,10 +16,10 @@ ReactXnft.events.on("connect", () => {
 
 export function App() {
   return (
-    <View style={{ height: "100%", backgroundColor: "#1f2937" }}>
+    <View style={{ height: "100%", backgroundColor: "#2D3036" }}>
       <Tab.Navigator
         style={{
-          backgroundColor: "#1f2937",
+          backgroundColor: "#2D3036",
           borderTop: "1px solid rgba(255, 255, 255, 0.06)",
         }}
         options={({ route }) => {

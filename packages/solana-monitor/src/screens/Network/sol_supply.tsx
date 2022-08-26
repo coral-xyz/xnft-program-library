@@ -30,14 +30,16 @@ export function SOLSupplyScreen() {
   return (
     <View style={{ height: "100%", alignItems: "center", justifyContent: "center"}}>
         <View style={{flex: "1", paddingTop: "11px", paddingLeft:"12px", paddingRight: "11px", width: "343px", marginLeft: "16px", marginTop: "20px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.04)", backdropFilter: "blur(30px)", borderRadius: "8px"}}>
-          <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
+        <View style={{position: "fixed", marginTop: "5px", height: "136px", width: "140px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
+        <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
             SOL Supply
           </Text>
           <View style={{marginTop: "11px", width: "100%", height: "1px", background: "rgba(255, 255, 255, 0.06)"}}></View>
           <Text style={{fontWeight: "700", fontSize: "18px", lineHeight: "150%", marginTop: "12px", marginBottom: "15px"}}>{data?.data.solSupply.total.toLocaleString('en-US')}</Text>
         </View>
         <View style={{flex: "1", paddingTop: "11px", paddingLeft:"12px", paddingRight: "11px", width: "343px", marginLeft: "16px", marginTop: "20px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.04)", backdropFilter: "blur(30px)", borderRadius: "8px"}}>
-          <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
+        <View style={{position: "fixed", marginTop: "5px", height: "136px", width: "140px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
+        <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
             Circulating Supply
           </Text>
           <View style={{marginTop: "11px", width: "100%", height: "1px", background: "rgba(255, 255, 255, 0.06)"}}></View>
@@ -52,7 +54,8 @@ export function SOLSupplyScreen() {
           </View>
         </View>
         <View style={{flex: "1", paddingTop: "11px", paddingLeft:"12px", paddingRight: "11px", width: "343px", marginLeft: "16px", marginTop: "20px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.04)", backdropFilter: "blur(30px)", borderRadius: "8px"}}>
-          <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
+        <View style={{position: "fixed", marginTop: "5px", height: "136px", width: "140px", background: "#0DD3E2", borderRadius:"100px", opacity: "0.1", filter: "blur(25px)"}}></View>
+        <Text style={{fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "rgba(255, 255, 255, 0.65)"}}>
             Non-Circulating Supply
           </Text>
           <View style={{marginTop: "11px", width: "100%", height: "1px", background: "rgba(255, 255, 255, 0.06)"}}></View>
