@@ -1,11 +1,17 @@
 import React from "react";
 import ReactXnft, { Tab, View } from "react-xnft";
-import { DollarIcon, MonitorIcon, NFTIcon, YieldIcon, StablecoinIcon } from "./utils/icons";
+import {
+  DollarIcon,
+  MonitorIcon,
+  NFTIcon,
+  YieldIcon,
+  StablecoinIcon,
+} from "./utils/icons";
 import { Monitor } from "./screens/Network";
 import { Defi } from "./screens/DeFi";
 import { Nft } from "./screens/NFTs";
-import {Yield} from "./screens/Yield";
-import {Stablecoin} from './screens/Stablecoins'
+import { Yield } from "./screens/Yield";
+import { Stablecoin } from "./screens/Stablecoins";
 
 //
 // On connection to the host environment, warm the cache.
@@ -42,27 +48,11 @@ export function App() {
           };
         }}
       >
-        
-        <Tab.Screen
-          name="monitor"
-          component={() => <Monitor />}
-        />
-        <Tab.Screen 
-          name="nft" 
-          component={() => <Nft />} 
-        />
-        <Tab.Screen
-          name="defi"
-          component={() => <Defi />}
-        />
-        <Tab.Screen
-          name="yield"
-          component={() => <Yield />}
-        />
-        <Tab.Screen
-        name="stablecoins"
-        component={() => <Stablecoin />}
-        />
+        <Tab.Screen name="monitor" component={() => <Monitor />} />
+        <Tab.Screen name="nft" component={() => <Nft />} />
+        <Tab.Screen name="defi" component={() => <Defi />} />
+        <Tab.Screen name="yield" component={() => <Yield />} />
+        <Tab.Screen name="stablecoins" component={() => <Stablecoin />} />
       </Tab.Navigator>
     </View>
   );
