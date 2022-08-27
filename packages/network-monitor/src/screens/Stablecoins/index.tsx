@@ -4,9 +4,6 @@ import { StablecoinScreen } from "./defi";
 
 export function Stablecoin() {
   return (
-    // <View>
-    //     <Text>Hey</Text>
-    // </View>
     <Stack.Navigator
       initialRoute={{ name: "main" }}
       options={({ route }) => {

@@ -4,9 +4,6 @@ import { NFTScreen } from "./nft";
 
 export function Nft() {
   return (
-    // <View>
-    //     <Text>Hey</Text>
-    // </View>
     <Stack.Navigator
       initialRoute={{ name: "main" }}
       options={({ route }) => {

@@ -6,9 +6,6 @@ import { SOLStakeScreen } from "./sol_stake";
 
 export function Monitor() {
   return (
-    // <View>
-    //     <Text>Hey</Text>
-    // </View>
     <Stack.Navigator
       initialRoute={{ name: "main" }}
       options={({ route }) => {

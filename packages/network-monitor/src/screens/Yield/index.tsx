@@ -4,9 +4,6 @@ import { YieldScreen } from "./defi";
 
 export function Yield() {
   return (
-    // <View>
-    //     <Text>Hey</Text>
-    // </View>
     <Stack.Navigator
       initialRoute={{ name: "main" }}
       options={({ route }) => {
