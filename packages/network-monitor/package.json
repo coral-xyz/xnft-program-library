@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "react": "^17.0.2",
-    "react-xnft": "^0.0.4",
+    "react-xnft": "latest",
     "swr": "^1.3.0"
   }
 }

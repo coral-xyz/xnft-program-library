@@ -1,23 +1,26 @@
-import AnchorUi, { Tab, View } from "react-xnft";
-import { DollarIcon, MonitorIcon, NFTIcon } from "./utils/icons";
-import { Monitor } from "./components/monitor";
-import { Defi } from "./components/defi";
-import { NFT } from "./components/nft";
+import React from "react";
+import ReactXnft, { Tab, View } from "react-xnft";
+import { DollarIcon, MonitorIcon, NFTIcon, YieldIcon, StablecoinIcon } from "./utils/icons";
+import { Monitor } from "./screens/Network";
+import { Defi } from "./screens/DeFi";
+import { Nft } from "./screens/NFTs";
+import {Yield} from "./screens/Yield";
+import {Stablecoin} from './screens/Stablecoins'
 
 //
 // On connection to the host environment, warm the cache.
 //
-AnchorUi.events.on("connect", () => {
+ReactXnft.events.on("connect", () => {
   //
 });
 
 export function App() {
   return (
-    <View style={{ height: "100%", backgroundColor: "#1f2937" }}>
+    <View style={{ height: "100%", backgroundColor: "#2D3036" }}>
       <Tab.Navigator
         style={{
-          backgroundColor: "#1f2937",
-          borderTop: "1px solid #0f766e",
+          backgroundColor: "#2D3036",
+          borderTop: "1px solid rgba(255, 255, 255, 0.06)",
         }}
         options={({ route }) => {
           return {
@@ -30,22 +33,36 @@ export function App() {
                 return <Tab.Icon element={<DollarIcon fill={color} />} />;
               } else if (route.name === "nft") {
                 return <Tab.Icon element={<NFTIcon fill={color} />} />;
+              } else if (route.name === "yield") {
+                return <Tab.Icon element={<YieldIcon fill={color} />} />;
+              } else if (route.name === "stablecoins") {
+                return <Tab.Icon element={<StablecoinIcon fill={color} />} />;
               }
             },
           };
         }}
       >
+        
         <Tab.Screen
           name="monitor"
-          disableLabel={true}
           component={() => <Monitor />}
+        />
+        <Tab.Screen 
+          name="nft" 
+          component={() => <Nft />} 
         />
         <Tab.Screen
           name="defi"
-          disableLabel={true}
           component={() => <Defi />}
         />
-        <Tab.Screen name="nft" disableLabel={true} component={() => <NFT />} />
+        <Tab.Screen
+          name="yield"
+          component={() => <Yield />}
+        />
+        <Tab.Screen
+        name="stablecoins"
+        component={() => <Stablecoin />}
+        />
       </Tab.Navigator>
     </View>
   );
