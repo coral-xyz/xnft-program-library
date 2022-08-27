@@ -217,7 +217,6 @@ export function StablecoinScreen() {
       >
         Stablecoin Ranking
       </Text>
-      {/* <TextField style={{marginTop: "10px", marginLeft: "16px", width: "365px"}} />   */}
       <View
         style={{
           display: "flex",
@@ -292,15 +291,6 @@ export function StablecoinScreen() {
                 >
                   {index + 1}
                 </Text>
-                {/* <Image 
-                      src={item.logo}
-                      style={{
-                        width: "23px",
-                        height: "23px",
-                        marginLeft: `${(index + 1 <= 10) ? "10px" : "8px" }`,
-                        borderRadius: "50px",
-                      }}
-                    /> */}
                 <View style={{ width: "90px" }}>
                   <Text
                     style={{

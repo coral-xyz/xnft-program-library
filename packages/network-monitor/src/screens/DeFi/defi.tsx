@@ -266,9 +266,6 @@ export function DeFiScreen() {
             }}
           >
             SOL Price
-            {/* <View style={{marginLeft: "5px", background: "rgba(255, 255, 255, 0.04)", borderRadius:"6px", height: "24px", width: "67px"}}>
-                <Text style={{marginLeft: "5px", fontFamily: "Inter", fontSize: "14px", fontWeight: "400", lineHeight: "150%", alignItems: "center", color: "#0DD3E2"}}>Rank #{sol_details?.data?.market_cap_rank}</Text>
-            </View> */}
           </Text>
           <View
             style={{
@@ -399,7 +396,6 @@ export function DeFiScreen() {
       >
         Protocols
       </Text>
-      {/* <TextField style={{marginTop: "10px", marginLeft: "16px", width: "365px"}} />   */}
       <View
         style={{
           display: "flex",

@@ -5,7 +5,6 @@ import useSWR from "swr";
 const fetcher = (url) => fetch(url).then((r) => r.json());
 
 export function YieldScreen() {
-  const [search, setSearch] = useState<any>("");
   const { data } = useSWR("https://api.llama.fi/charts/solana", fetcher);
 
   const diff = data
@@ -32,8 +31,7 @@ export function YieldScreen() {
   const filtered = protocol_data?.data?.data?.filter(
     (data, index) =>
       data.chain === "Solana" &&
-      data.tvlUsd > 1000 &&
-      data.symbol.includes(search)
+      data.tvlUsd > 1000 
   );
   console.log("protocol data filtered", filtered);
 
@@ -91,8 +89,6 @@ export function YieldScreen() {
       >
         Yield Ranking
       </Text>
-      {/* <TextField style={{width:"200px",marginLeft:"20px", marginRight: "20px"}} placeholder="Search by Name" value={search} onChange={(e) => setSearch(e.data.value)}/> */}
-
       <View
         style={{
           display: "flex",
@@ -167,15 +163,6 @@ export function YieldScreen() {
                 >
                   {index + 1}
                 </Text>
-                {/* <Image 
-                      src={item.logo}
-                      style={{
-                        width: "23px",
-                        height: "23px",
-                        marginLeft: `${(index + 1 <= 10) ? "10px" : "8px" }`,
-                        borderRadius: "50px",
-                      }}
-                    /> */}
                 <View style={{ width: "90px" }}>
                   <Text
                     style={{
