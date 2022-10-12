@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { LocalStorage } from "react-xnft";
-import { StateType, useDispatch } from "../state";
+import { StateType, useDispatch } from "../../state";
 import { SET_TOKENLIST } from "../_actions/SET_TOKENLIST";
 import { TokenListType } from "../_types/TokenListType";
 
 const TTL = 1000*5;
 const refreshtime = 1000*5
-const url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h";
+const count = 500;
+const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${count}&page=1&sparkline=true&price_change_percentage=24h`;
 
-function useTokenList(tokenList: StateType["tokenInfo"]) {
+function useRefreshTokenList(tokenList: StateType["tokenInfo"]) {
   const dispatch = useDispatch();
   useEffect(() => {
     const now = Date.now();
@@ -35,11 +36,14 @@ function useTokenList(tokenList: StateType["tokenInfo"]) {
       fetchTokenList();
     }
     const refresh = setInterval(fetchTokenList, refreshtime);
-    return ()=>clearInterval(refresh);
+    return ()=>{
+      console.log("TokenList Unmounted");
+      clearInterval(refresh)
+    };
   }, [tokenList]);
 
 }
 
 
 
-export default useTokenList;
+export default useRefreshTokenList;

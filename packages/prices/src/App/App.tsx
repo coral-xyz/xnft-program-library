@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import ReactXnft, { Loading, LocalStorage } from "react-xnft";
-import { connect, ReduxProvider, StateType, useDispatch } from "./state";
+import { connect, ReduxProvider, StateType, useDispatch } from "../state";
 import { createSelector } from 'reselect';
-import TokenList from "./TokenList";
 import { INITIALIZE_STATE } from "./_actions/INITIALIZE_STATE";
+import CenteredLoader from "./CenteredLoader";
+import Navigation from "./Navigation";
 
 // On connection to the host environment, warm the cache.
 //
@@ -35,10 +36,10 @@ function _App({ initialized }: Props & StateProps) {
   }, [initialized])
 
   if(!initialized) {
-    return (<Loading></Loading>)
+    return (<CenteredLoader />)
   }
 
-  return <TokenList />
+  return <Navigation />
 }
 
 const selector = createSelector(

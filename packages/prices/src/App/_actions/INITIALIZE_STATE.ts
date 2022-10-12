@@ -1,5 +1,5 @@
 import { createSimpleAction, Reducer } from "../_helpers/redux";
-import { StateType } from "../state";
+import { StateType } from "../../state";
 
 export const INITIALIZE_STATE = createSimpleAction<{
   state: StateType | null

@@ -1,5 +1,5 @@
 import { createSimpleAction, Reducer } from "../_helpers/redux";
-import { StateType } from "../state";
+import { StateType } from "../../state";
 
 export const SET_FILTER = createSimpleAction<{
   filter: string,

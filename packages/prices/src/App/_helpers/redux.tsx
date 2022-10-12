@@ -16,11 +16,11 @@ export type Reducer<State, Actions> = (state: State, action: Actions) => State;
 
 export default createRedux
 
-export const createSimpleAction = <V extends {[key:string]: any }, T extends string>(type: T): ((values:V) => V & {type: T}) => (values)=> ({type, ...values});
+export const createSimpleAction = <V extends { [key: string]: any }, T extends string>(type: T): ((values: V) => V & { type: T }) => (values) => ({ type, ...values });
 
 function createRedux<State, Actions>(reducer: Reducer<State, Actions>, initialState: State) {
   const StateContext = createContext({ state: initialState });
-  const DispatchContext = createContext< { dispatch: ThunkDispatch<State, Actions> }>({ dispatch: (()=>{}) as ThunkDispatch<State, Actions> });
+  const DispatchContext = createContext<{ dispatch: ThunkDispatch<State, Actions> }>({ dispatch: (() => { }) as ThunkDispatch<State, Actions> });
 
   const ReduxProvider = ({
     children
@@ -55,16 +55,16 @@ function createRedux<State, Actions>(reducer: Reducer<State, Actions>, initialSt
         );
         return useMemo(() => (
           // @ts-ignore
-          <Component {...props} {...(selection ?? {} as SP)}  />
+          <Component {...props} {...(selection ?? {} as SP)} />
         ), [selection, props]);
       }
 
 
-  const useDispatch = ()=>{
+  const useDispatch = () => {
     const { dispatch } = useContext(DispatchContext);
     return dispatch;
   }
-    
+
   return {
     connect,
     ReduxProvider,
@@ -81,7 +81,7 @@ type ThunkDispatch<State, Actions> = (action: Actions | Thunk<State, Actions>) =
 function useThunk<State, Actions>([state, dispatch]: [State, Dispatch<Actions>]): [State, ThunkDispatch<State, Actions>] {
   const containerRef: MutableRefObject<State> = useRef<State>(state);
   const thunkDispatch: ThunkDispatch<State, Actions> = useCallback((action: Actions | Thunk<State, Actions>) => {
-    console.log("useTHUNK", action);
+    console.log("useThunk", action);
     switch (typeof action) {
       case "object": {
         dispatch(action as Actions);
