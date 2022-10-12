@@ -18,7 +18,7 @@ function Navigation() {
           };
         case "details":{
           return {
-            title: route.props?.name,
+            title: route.props?.token.name,
           };}
         default:
           throw new Error("unknown route");

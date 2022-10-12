@@ -7,7 +7,8 @@ import { SET_FILTER } from "./_actions/SET_FILTER";
 import useRefreshTokenList from "./_hooks/useRefreshTokenList";
 import CenteredLoader from "./CenteredLoader";
 import { green, red } from "./_helpers/color";
-
+import formatPrice from "./_helpers/formatPrice";
+import debounce from "debounce";
 
 type Props = {
 }
@@ -30,6 +31,7 @@ function TokenList({ filter, tokenInfo: tokenList }: Props & StateProps) {
   const regex = new RegExp(filter, "i");
   const filteredList = tokenList.data.filter((token) => regex.test(token.name) || regex.test(token.symbol) || regex.test(token.id));
   filteredList.length = 20;
+
   return (
     <View
       style={{
@@ -37,10 +39,7 @@ function TokenList({ filter, tokenInfo: tokenList }: Props & StateProps) {
         flexDirection: "column",
         height: "100%",
         padding:"10px 0px",
-        cursor:"pointer",
-        ":hover":{
-          backgroundColor:"red"
-        }
+        cursor:"pointer"
       }}
     >
       <View
@@ -65,6 +64,11 @@ function TokenList({ filter, tokenInfo: tokenList }: Props & StateProps) {
       >
         <ScrollBar>
           {filteredList.map((token) => {
+            const changePercent = formatPrice(token.price_change_percentage_24h);
+            const currentPrice = formatPrice(token.current_price);
+            const arrow = (token.price_change_percentage_24h??0)+0>0?"↗":"↘";
+            const color = (token.price_change_percentage_24h??0)+0>0?green:red; 
+      
             return (
               <View
                 style={{
@@ -72,7 +76,7 @@ function TokenList({ filter, tokenInfo: tokenList }: Props & StateProps) {
                   display: "flex"
                 }}
                 key={token.id}
-                onClick={() => nav.push("details", token)}
+                onClick={() => nav.push("details", {token})}
               >
                 <View
                   style={{
@@ -118,15 +122,15 @@ function TokenList({ filter, tokenInfo: tokenList }: Props & StateProps) {
                     style={{
                       textAlign:"right"
                     }}
-                  >{`$${token.current_price}`}</Text>
+                  >{`$${currentPrice}`}</Text>
                   <Text
                     style={{
                       font: "Inter",
                       fontSize: "16px",
                       textAlign:"right",
-                      color: (token.price_change_percentage_24h??0)+0>0 ? green:red
+                      color: color
                     }}
-                  >{`${(token.price_change_percentage_24h??0)+0>0?"↗":"↘"} ${token.price_change_percentage_24h}%`}</Text>
+                  >{`${arrow} ${changePercent}%`}</Text>
                 </View>
               </View>
             )
