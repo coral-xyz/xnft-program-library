@@ -1,0 +1,29 @@
+{
+  "name": "xnft-quickstart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "xnft build",
+    "start": "xnft watch",
+    "dev": "xnft dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@coral-xyz/xnft-cli": "latest"
+  },
+  "dependencies": {
+    "debounce": "^1.2.1",
+    "react": "^17.0.2",
+    "react-xnft": "latest",
+    "reselect": "^4.1.6",
+    "superstruct": "^0.16.5"
+  },
+  "alias": {
+    "process": {
+      "global": "{}",
+      "env": "{}"
+    }
+  }
+}
