@@ -11,21 +11,30 @@ type Props = {
   token: TokenInfoType
 }
 
-const fetcher = (url) => fetch(url).then((r) => r.json());
+const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) => fetch(input, init).then(res => res.json())
 
 type DataPoint = [time: number, value: number];
 type MarketChartData = {
   prices: DataPoint[]
 }
 
+const labelForTime = (time: number) => {
+  const date = new Date(time);
+  return `${date.getHours()}:${date.getMinutes()}`;
+}
+
 function TokenDetails(props: Props) {
-  const { data } = useSWR<MarketChartData>(`https://api.coingecko.com/api/v3/coins/${props.token.id}/market_chart?vs_currency=usd&days=1`, fetcher);
+  const { data } = useSWR<MarketChartData>(`https://api.coingecko.com/api/v3/coins/${props.token.id}/market_chart?vs_currency=usd&days=1`, fetcher, {
+    revalidateOnMount: true
+  });
 
   const currentPrice = formatPrice(props.token.current_price);
   const changePercent = formatPrice(props.token.price_change_percentage_24h);
   const changeCurrency = formatPrice(props.token.price_change_24h);
   const arrow = (props.token.price_change_percentage_24h ?? 0) + 0 > 0 ? "↗" : "↘";
   const color = (props.token.price_change_percentage_24h ?? 0) + 0 > 0 ? green : red;
+
+  const hourlyData = data?.prices.filter((_,i,a)=>(i%6===0 || i===a.length))
 
   return (
     <>
@@ -73,11 +82,16 @@ function TokenDetails(props: Props) {
         </View>
       </View>
 
-      {data ? (
+      {hourlyData? (
         <Chart
-          data={data.prices}
+          data={hourlyData}
           height={220}
           width={343}
+          title={`${props.token.symbol.toUpperCase()} 1d / 30min`}
+          ticks={[
+            labelForTime(hourlyData[0][0]), 
+            labelForTime(hourlyData[Math.floor(hourlyData.length/2)][0]), 
+            labelForTime(hourlyData[hourlyData.length-1][0])]}
         />
       ) : (
         <View
