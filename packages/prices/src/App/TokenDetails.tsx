@@ -1,16 +1,25 @@
 import React from "react";
-import { Loading, Image, Text, View, TextField } from "react-xnft";
-import { connect, StateType, useDispatch } from "../state";
+import { Image, Text, View } from "react-xnft";
 import { TokenInfoType } from "./_types/TokenInfoType";
 import { green, red } from "./_helpers/color";
 import formatPrice from "./_helpers/formatPrice";
+import useSWR from "swr";
+import CenteredLoader from "./CenteredLoader";
+import Chart from "./Chart";
 
 type Props = {
   token: TokenInfoType
 }
 
+const fetcher = (url) => fetch(url).then((r) => r.json());
+
+type DataPoint = [time: number, value: number];
+type MarketChartData = {
+  prices: DataPoint[]
+}
+
 function TokenDetails(props: Props) {
-  console.log(props);
+  const { data } = useSWR<MarketChartData>(`https://api.coingecko.com/api/v3/coins/${props.token.id}/market_chart?vs_currency=usd&days=1`, fetcher);
 
   const currentPrice = formatPrice(props.token.current_price);
   const changePercent = formatPrice(props.token.price_change_percentage_24h);
@@ -20,7 +29,6 @@ function TokenDetails(props: Props) {
 
   return (
     <>
-
       <View style={{
         display: "flex",
         padding: "16px"
@@ -64,14 +72,27 @@ function TokenDetails(props: Props) {
           </Text>
         </View>
       </View>
-      <View
-        style={{
-          margin: "0px 16px",
-          position: "relative",
-          border: "1px solid rgb(255,255,255, 0.5)",
-          height: "275px"
-        }}
-      ></View>
+
+      {data ? (
+        <Chart
+          data={data.prices}
+          height={220}
+          width={343}
+        />
+      ) : (
+        <View
+          style={{
+            margin: "0px 16px",
+            position: "relative",
+            width: "343px",
+            height: "275px"
+          }}
+        >
+          <CenteredLoader />
+        </View>
+      )}
+
+
       <View
         style={{
           display: "flex",
@@ -79,7 +100,7 @@ function TokenDetails(props: Props) {
           fontSize: "14px",
           lineHeight: "16px",
           alignItems: "stretch",
-          padding: "8px 8px" 
+          padding: "8px 8px"
         }}
       >
         <View

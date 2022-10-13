@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import ReactXnft, { Loading, LocalStorage } from "react-xnft";
+import ReactXnft, { Loading, LocalStorage, View } from "react-xnft";
 import { connect, ReduxProvider, StateType, useDispatch } from "../state";
 import { createSelector } from 'reselect';
 import { INITIALIZE_STATE } from "./_actions/INITIALIZE_STATE";
@@ -23,34 +23,42 @@ type StateProps = {
 
 function _App({ initialized }: Props & StateProps) {
   const dispatch = useDispatch();
-  useEffect(()=>{
-    if(!initialized) {
-      LocalStorage.get("PricesState").then((state)=>{
-        if(StateType.is(state)) {
-          dispatch(INITIALIZE_STATE({state}))
+  useEffect(() => {
+    if (!initialized) {
+      LocalStorage.get("PricesState").then((state) => {
+        if (StateType.is(state)) {
+          dispatch(INITIALIZE_STATE({ state }))
         } else {
-          dispatch(INITIALIZE_STATE({state: null}))
+          dispatch(INITIALIZE_STATE({ state: null }))
         }
       })
     }
   }, [initialized])
 
-  if(!initialized) {
+  if (!initialized) {
     return (<CenteredLoader />)
   }
 
-  return <Navigation />
+  return <View
+    style={{
+      position: "relative",
+      height: "100%",
+      background: "rgb(0,0,0, 0.87)"
+    }}
+  >
+    <Navigation />
+  </View>
 }
 
 const selector = createSelector(
-  (state:StateType) => (state.initialized),
+  (state: StateType) => (state.initialized),
   (initialized) => ({ initialized })
 )
 const ConnectedApp = connect<Props, StateProps>(selector)(_App);
 
 export function App() {
   return (
-    <ReduxProvider> 
+    <ReduxProvider>
       <ConnectedApp />
     </ReduxProvider>
   );

@@ -1,6 +1,5 @@
 import React from "react";
 import { Loading, Text, View, Image, TextField, useNavigation, ScrollBar } from "react-xnft";
-import 'react-virtualized/styles.css'; // only needs to be imported once
 import { connect, StateType, useDispatch } from "../state";
 import { createSelector } from 'reselect';
 import { SET_FILTER } from "./_actions/SET_FILTER";
@@ -8,7 +7,6 @@ import useRefreshTokenList from "./_hooks/useRefreshTokenList";
 import CenteredLoader from "./CenteredLoader";
 import { green, red } from "./_helpers/color";
 import formatPrice from "./_helpers/formatPrice";
-import debounce from "debounce";
 
 type Props = {
 }

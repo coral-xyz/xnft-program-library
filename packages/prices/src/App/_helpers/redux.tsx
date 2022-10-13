@@ -30,11 +30,13 @@ function createRedux<State, Actions>(reducer: Reducer<State, Actions>, initialSt
     const { state: initialState } = useContext(StateContext)
     const [state, dispatch] = useThunk<State, Actions>(useReducer(reducer, initialState));
     return (
-      <DispatchContext.Provider value={{ dispatch }}>
-        <StateContext.Provider value={{ state }}>
-          {useMemo(() => (<>{children}</>), [])}
-        </StateContext.Provider>
-      </DispatchContext.Provider>
+      <StateContext.Provider value={{ state }}>
+        {useMemo(() => (
+          <DispatchContext.Provider value={{ dispatch }}>
+            {children}
+          </DispatchContext.Provider>
+        ), [])}
+      </StateContext.Provider>
     );
   }
 
