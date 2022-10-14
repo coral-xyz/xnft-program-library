@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, Image, TextField, useNavigation, ScrollBar } from "react-xnft";
+import { Text, View, Image, TextField, useNavigation, ScrollBar, useTheme } from "react-xnft";
 import { connect, StateType, useDispatch } from "../state";
 import { createSelector } from 'reselect';
 import CenteredLoader from "./CenteredLoader";
@@ -18,7 +18,6 @@ type StateProps = {
 }
 
 function TokenList({ tokenList, tokenInfos, favorites }: Props & StateProps) {
-  const dispatch = useDispatch();
   const [filter, setFilter] = useState<string>("")
   const nav = useNavigation();
 

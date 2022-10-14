@@ -152,7 +152,7 @@ function TokenDetails(props: Props & StateProps) {
               }
             }))}
             style={{
-              color: "black",
+              color: "grey",
               borderRadius: "14px",
               padding: "0px 8px",
               minWidth: "auto",

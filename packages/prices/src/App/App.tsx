@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import ReactXnft, { Loading, LocalStorage, View } from "react-xnft";
+import ReactXnft, { LocalStorage, View } from "react-xnft";
 import { connect, ReduxProvider, StateType, useDispatch } from "../state";
 import { createSelector } from 'reselect';
 import { INITIALIZE_STATE } from "./_actions/INITIALIZE_STATE";
@@ -31,6 +31,7 @@ function _App({ initialized }: Props & StateProps) {
         if (StateType.is(state)) {
           dispatch(INITIALIZE_STATE({ state }))
         } else {
+          console.error("Prices xNFT:", "INVALID STATE", StateType.validate(state)[0])
           dispatch(INITIALIZE_STATE({ state: null }))
         }
       })
