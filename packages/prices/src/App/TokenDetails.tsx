@@ -231,6 +231,7 @@ function AssetFact({ label, value }: { label: string, value: string }) {
 }
 
 const selector = createSelector(
+  (state: StateType, props: Props) => state.tokenInfos[props.token.id],
   (state: StateType, props: Props) => state.favorites[props.token.id],
   (state: StateType, props: Props) => {
     const tokenChart = state.tokenCharts[props.token.id] ?? {};
@@ -241,7 +242,7 @@ const selector = createSelector(
     const activeChart = tokenChart.activeChart ?? "1D"
     return tokenChart[getChartDataTime(activeChart)];
   },
-  (isFavorited, activeChart, chartData) => ({ isFavorited, activeChart, chartData })
+  (token, isFavorited, activeChart, chartData) => ({token, isFavorited, activeChart, chartData })
 )
 
 export default connect<Props, StateProps>(selector)(TokenDetails);

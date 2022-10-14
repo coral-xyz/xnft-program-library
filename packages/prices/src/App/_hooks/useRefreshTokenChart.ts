@@ -5,7 +5,7 @@ import { getChartDataTime } from "../_helpers/getChartDataTime";
 import { ChartDataType } from "../_types/ChartDataType";
 import { ChartType } from "../_types/ChartType";
 
-const refreshtime = 1000 * 5
+const refreshtime = 1000 * 60
 const apiKey = "CG-YrhgwDXiLCa2Euwf1EqRYWNg";
 
 const getUrl = (tokenId: string, chart: ChartType) => {
@@ -43,7 +43,6 @@ function useRefreshTokenChart(tokenId: string, chart: ChartType) {
     fetchTokenChart();
     const refresh = setInterval(fetchTokenChart, refreshtime);
     return () => {
-      console.log("TokenDetails Unmount")
       clearInterval(refresh)
     };
   }, [tokenId, chart]);

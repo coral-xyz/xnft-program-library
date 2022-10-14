@@ -14,7 +14,7 @@ import React, {
 
 export type Reducer<State, Actions> = (state: State, action: Actions) => State;
 
-export default createRedux
+export default createRedux;
 
 export const createSimpleAction = <V extends { [key: string]: any }, T extends string>(type: T): ((values: V) => V & { type: T }) => (values) => ({ type, ...values });
 
@@ -72,7 +72,6 @@ function createRedux<State, Actions>(reducer: Reducer<State, Actions>, initialSt
     ReduxProvider,
     useDispatch
   }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,7 +82,7 @@ type ThunkDispatch<State, Actions> = (action: Actions | Thunk<State, Actions>) =
 function useThunk<State, Actions>([state, dispatch]: [State, Dispatch<Actions>]): [State, ThunkDispatch<State, Actions>] {
   const containerRef: MutableRefObject<State> = useRef<State>(state);
   const thunkDispatch: ThunkDispatch<State, Actions> = useCallback((action: Actions | Thunk<State, Actions>) => {
-    console.log("useThunk", action);
+    // console.log("PCA", "useThunk", action);
     switch (typeof action) {
       case "object": {
         dispatch(action as Actions);

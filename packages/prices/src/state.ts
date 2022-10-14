@@ -8,6 +8,7 @@ import { FAVORITE, FAVORITE_reducer } from './App/_actions/FAVORITE';
 import { GraphDataPointType } from './App/_types/GraphDataPointType';
 import { TokenChartType } from './App/_types/TokenChartType';
 import { SET_TOKEN_CHART, SET_TOKEN_CHART_reducer } from './App/_actions/SET_TOKEN_CHART';
+import { TokenInfoType } from './App/_types/TokenInfoType';
 
 export type StateType = Infer<typeof StateType>;
 export const StateType = type({
@@ -24,6 +25,11 @@ export const StateType = type({
     updated: number(),
     data: TokenListType
   })),
+  tokenInfos: record(
+    string(),
+    TokenInfoType
+  ),
+  tokenList: nullable(array(string())),
   favorites: record(
     string(),
     boolean()
@@ -50,6 +56,8 @@ const reducer: Reducer<StateType, Actions> = (state, action) => {
 const initialState: StateType = {
   initialized: false,
   tokenInfo: null,
+  tokenInfos: {},
+  tokenList: null,
   tokenCharts: {},
   loadingStatus: {},
   favorites: {}

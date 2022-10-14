@@ -12,11 +12,12 @@ type Props = {
 
 type StateProps = {
   filter: string
-  tokenInfo: StateType["tokenInfo"];
+  tokenInfos: StateType["tokenInfos"];
+  tokenList: StateType["tokenList"];
   favorites: StateType["favorites"]
 }
 
-function TokenList({ tokenInfo: tokenList, favorites }: Props & StateProps) {
+function TokenList({ tokenList, tokenInfos, favorites }: Props & StateProps) {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState<string>("")
   const nav = useNavigation();
@@ -27,15 +28,15 @@ function TokenList({ tokenInfo: tokenList, favorites }: Props & StateProps) {
     )
   }
 
-  const favoritesList = tokenList.data.filter((token) => favorites[token.id]);
-  const nonFavoritesList = tokenList.data.filter((token) => !favorites[token.id]);
+  const favoritesList = tokenList.filter((token) => favorites[token]);
+  const nonFavoritesList = tokenList.filter((token) => !favorites[token]);
   nonFavoritesList.length = favoritesList.length>20 ? 0:20-favoritesList.length;
   
-  let filteredList: typeof tokenList.data | undefined;
+  let filteredList: typeof tokenList | undefined;
 
   if(filter !== "") {
     const regex = new RegExp(filter, "i");
-    filteredList = tokenList.data.filter((token) => regex.test(token.name) || regex.test(token.symbol) || regex.test(token.id));
+    filteredList = tokenList.filter((token) => regex.test(tokenInfos[token]?.name) || regex.test(tokenInfos[token]?.symbol) || regex.test(token));
     filteredList.length = 20;
   }
 
@@ -71,9 +72,9 @@ function TokenList({ tokenInfo: tokenList, favorites }: Props & StateProps) {
         }}
       >
         <ScrollBar>
-          {filteredList && filteredList.map((token)=>renderToken(token, favorites[token.id], nav))}
-          {!filteredList && favoritesList.map((token)=>renderToken(token, favorites[token.id], nav))}
-          {!filteredList && nonFavoritesList.map((token)=>renderToken(token, favorites[token.id], nav))}
+          {filteredList && filteredList.map((token)=>renderToken(tokenInfos[token], favorites[token], nav))}
+          {!filteredList && favoritesList.map((token)=>renderToken(tokenInfos[token], favorites[token], nav))}
+          {!filteredList && nonFavoritesList.map((token)=>renderToken(tokenInfos[token], favorites[token], nav))}
         </ScrollBar>
       </View>
 
@@ -159,9 +160,10 @@ function renderToken(
 }
 
 const selector = createSelector(
-  (state: StateType) => state.tokenInfo,
+  (state: StateType) => state.tokenInfos,
+  (state: StateType) => state.tokenList,
   (state: StateType) => state.favorites,
-  (tokenInfo, favorites) => ({ tokenInfo, favorites })
+  (tokenInfos, tokenList, favorites) => ({ tokenInfos, tokenList, favorites })
 )
 
 export default connect<Props, StateProps>(selector)(TokenList);
