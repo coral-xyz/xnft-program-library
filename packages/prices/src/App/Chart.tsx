@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GraphDataPointType } from "./_types/GraphDataPointType";
 import { View, Text, Svg, Path } from "react-xnft";
 import { green, red } from "./_helpers/color";
@@ -18,12 +18,14 @@ function Chart({ data, height, width, title, ticks }: Props) {
   const gradientColor = data[0][1] > data[data.length - 1][1] ?
     `linear-gradient(rgb(0,0,0,0), rgba(239, 68, 68, 0.2))` :
     `linear-gradient(rgba(52, 211, 153, 0.2), rgb(0,0,0,0))`;
-  const graph = makeGraph(data, width, height);
+  const adjustedHeight = height - 24;
+  const graph = makeGraph(data, width, adjustedHeight);
+
 
   return (
     <View
       style={{
-        margin: "0 16px",
+        margin: "8px 16px",
         padding: "16px 0px",
         position: "relative"
       }}
@@ -32,23 +34,22 @@ function Chart({ data, height, width, title, ticks }: Props) {
         style={{
           position: "absolute",
           fontSize: "12px",
-          color: "#52525B",
+          opacity: "0.35",
           textAlign: "left",
           width: "100%",
           top: "-2px",
         }}
       >{title}</Text>
-      <Text
-        style={{
-          position: "absolute",
-          fontSize: "12px",
-          color: "#52525B",
-          textAlign: "right",
-          width: "100%",
-          top: "-2px",
-        }}
-      >{`L:${formatPrice(graph.min)} H:${formatPrice(graph.max)}`}</Text>
-
+        <Text
+          style={{
+            position: "absolute",
+            fontSize: "12px",
+            opacity: "0.35",
+            textAlign: "right",
+            width: "100%",
+            top: "-2px",
+          }}
+        >{`${formatPrice(graph.max)} / ${formatPrice(graph.min)} (H/L)`}</Text>
       <View
         style={{
           position: "absolute",
@@ -60,9 +61,9 @@ function Chart({ data, height, width, title, ticks }: Props) {
       />
       <View
         style={{
-          position:"relative",
+          position: "relative",
           width: `${width}px`,
-          height: `${height}px`,
+          height: `${adjustedHeight}px`,
           borderTop: ".5px solid #52525B",
           borderBottom: ".5px solid #52525B",
           background: gradientColor,
@@ -75,14 +76,17 @@ function Chart({ data, height, width, title, ticks }: Props) {
               style={{
                 position: "absolute",
                 fontSize: "12px",
-                color: "#52525B",
+                opacity: "0.35",
                 textAlign: i === 0 ? "left" : i === a.length - 1 ? "right" : "center",
                 bottom: "-18px",
-                width: "30px",
+                width: "40px",
                 marginLeft: i === 0 ? 0 : i === a.length - 1 ? "-30px" : "-15px",
                 left: i * width / (a.length - 1),
+                whiteSpace: "nowrap"
               }}
-            > {tick}</Text>
+            >
+              {tick}
+            </Text>
             <View
               style={{
                 position: "absolute",
@@ -96,9 +100,12 @@ function Chart({ data, height, width, title, ticks }: Props) {
         })}
         <Svg
           width={width}
-          height={height}
+          height={adjustedHeight}
         >
           <Path
+            // This key is a hack to force remount 
+            // because d property update is not implemented
+            key={graph.curve} 
             d={graph.curve}
             stroke={color}
             fill="none"

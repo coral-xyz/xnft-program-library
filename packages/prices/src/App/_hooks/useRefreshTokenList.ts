@@ -6,10 +6,10 @@ import { TokenListType } from "../_types/TokenListType";
 
 const TTL = 1000*5;
 const refreshtime = 1000*5
-const count = 500;
-const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${count}&page=1&sparkline=true&price_change_percentage=24h`;
+const count = 250;
+const url = `https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${count}&page=1&sparkline=true&price_change_percentage=24h&x_cg_pro_api_key=CG-YrhgwDXiLCa2Euwf1EqRYWNg`;
 
-function useRefreshTokenList(tokenList: StateType["tokenInfo"]) {
+function useRefreshTokenList() {
   const dispatch = useDispatch();
   useEffect(() => {
     const now = Date.now();
@@ -29,19 +29,15 @@ function useRefreshTokenList(tokenList: StateType["tokenInfo"]) {
             throw TokenListType.validate(json)[0];
           }
         }).catch((e) => {
-          console.log(e, "refreshing in", refreshtime)
+          console.error(e, "refreshing in", refreshtime)
         });
     }
-    if (!tokenList || tokenList.updated + TTL < now) {
-      fetchTokenList();
-    }
+    fetchTokenList();
     const refresh = setInterval(fetchTokenList, refreshtime);
     return ()=>{
-      console.log("TokenList Unmounted");
       clearInterval(refresh)
     };
-  }, [tokenList]);
-
+  }, []);
 }
 
 

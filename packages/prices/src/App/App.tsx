@@ -5,6 +5,7 @@ import { createSelector } from 'reselect';
 import { INITIALIZE_STATE } from "./_actions/INITIALIZE_STATE";
 import CenteredLoader from "./CenteredLoader";
 import Navigation from "./Navigation";
+import useRefreshTokenList from "./_hooks/useRefreshTokenList";
 
 // On connection to the host environment, warm the cache.
 //
@@ -22,6 +23,7 @@ type StateProps = {
 }
 
 function _App({ initialized }: Props & StateProps) {
+  useRefreshTokenList();
   const dispatch = useDispatch();
   useEffect(() => {
     if (!initialized) {
