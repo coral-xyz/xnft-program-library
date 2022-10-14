@@ -5,7 +5,7 @@ import { TokenListType } from "../_types/TokenListType";
 
 const refreshtime = 1000 * 60
 const count = 250;
-const url = `https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${count}&page=1&sparkline=true&price_change_percentage=24h&x_cg_pro_api_key=CG-YrhgwDXiLCa2Euwf1EqRYWNg`;
+const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${count}&page=1&sparkline=true&price_change_percentage=24h`;
 
 function useRefreshTokenList() {
   const dispatch = useDispatch();

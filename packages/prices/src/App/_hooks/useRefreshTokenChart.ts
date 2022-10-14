@@ -6,7 +6,6 @@ import { ChartDataType } from "../_types/ChartDataType";
 import { ChartType } from "../_types/ChartType";
 
 const refreshtime = 1000 * 60
-const apiKey = "CG-YrhgwDXiLCa2Euwf1EqRYWNg";
 
 const getUrl = (tokenId: string, chart: ChartType) => {
   const days =
@@ -14,7 +13,7 @@ const getUrl = (tokenId: string, chart: ChartType) => {
       ["1W", "1M"].includes(chart) ? "90" :
         "max";
 
-  return `https://pro-api.coingecko.com/api/v3/coins/${tokenId}/market_chart?vs_currency=usd&days=${days}&x_cg_pro_api_key=${apiKey}`;
+  return `https://api.coingecko.com/api/v3/coins/${tokenId}/market_chart?vs_currency=usd&days=${days}`;
 }
 
 function useRefreshTokenChart(tokenId: string, chart: ChartType) {
