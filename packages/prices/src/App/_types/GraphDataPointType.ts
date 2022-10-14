@@ -1,1 +1,5 @@
-export type GraphDataPointType = [time: number, value: number];
+
+import {Infer, number, tuple } from "superstruct";
+
+export type GraphDataPointType = Infer<typeof GraphDataPointType>;
+export const GraphDataPointType = tuple([number(), number()]);

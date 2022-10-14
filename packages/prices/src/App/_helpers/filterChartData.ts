@@ -1,3 +1,4 @@
+import { ChartType } from "../_types/ChartType";
 import { GraphDataPointType } from "../_types/GraphDataPointType";
 
 const timeLabel = (time: number) => {
@@ -14,7 +15,7 @@ const yearLabel = (time: number) => {
   return `${date.getFullYear()}`;
 }
 
-export const charts = [
+export const charts: ChartType[] = [
   "1H",
   "1D",
   "1W",
@@ -25,20 +26,19 @@ export const charts = [
 
 function filterChartData(
   chart: string,
-  minuteData: GraphDataPointType[] | undefined,
-  hourData: GraphDataPointType[] | undefined,
-  dailyData: GraphDataPointType[] | undefined
+  data: GraphDataPointType[] | undefined,
 ): {
   labels: string[];
   points: GraphDataPointType[]
 } | null {
+
+  if (!data) {
+    return null;
+  }
   switch (chart) {
     case "1H": {
-      if (!minuteData) {
-        return null;
-      }
       const time = 1000 * 60 * 60;
-      const points = minuteData.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
+      const points = data.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
       return {
         points,
         labels: [
@@ -51,10 +51,7 @@ function filterChartData(
       }
     }
     case "1D": {
-      if (!minuteData) {
-        return null;
-      }
-      const points = minuteData.filter((_, i, a) => (i % 1 === 0 || i === a.length))
+      const points = data.filter((_, i, a) => (i % 1 === 0 || i === a.length))
       return {
         points,
         labels: [
@@ -67,11 +64,8 @@ function filterChartData(
       }
     }
     case "1W": {
-      if (!hourData) {
-        return null;
-      }
       const time = 1000 * 60 * 60 * 24 * 7;
-      const points = hourData.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
+      const points = data.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
       return {
         points,
         labels: [
@@ -84,11 +78,8 @@ function filterChartData(
       }
     }
     case "1M": {
-      if (!hourData) {
-        return null;
-      }
       const time = 1000 * 60 * 60 * 24 * 30;
-      const points = hourData.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
+      const points = data.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
       return {
         points,
         labels: [
@@ -101,11 +92,8 @@ function filterChartData(
       }
     }
     case "1Y": {
-      if (!dailyData) {
-        return null;
-      }
       const time = 1000 * 60 * 60 * 24 * 365;
-      const points = dailyData.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
+      const points = data.filter((point, i, a) => (point[0] >= a[a.length - 1][0] - time));
       return {
         points,
         labels: [
@@ -118,17 +106,15 @@ function filterChartData(
       }
     }
     default: {
-      if (!dailyData) {
-        return null;
-      }
+      const points = data;
       return {
-        points: dailyData,
+        points: data,
         labels: [
-          yearLabel(dailyData[0][0]),
-          yearLabel(dailyData[Math.floor(dailyData.length * 1 / 4)][0]),
-          yearLabel(dailyData[Math.floor(dailyData.length * 2 / 4)][0]),
-          yearLabel(dailyData[Math.floor(dailyData.length * 3 / 4)][0]),
-          yearLabel(dailyData[dailyData.length - 1][0])
+          yearLabel(points[0][0]),
+          yearLabel(points[Math.floor(points.length * 1 / 4)][0]),
+          yearLabel(points[Math.floor(points.length * 2 / 4)][0]),
+          yearLabel(points[Math.floor(points.length * 3 / 4)][0]),
+          yearLabel(points[points.length - 1][0])
         ]
       }
     }

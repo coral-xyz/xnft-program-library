@@ -12,47 +12,40 @@ import Star from "./Star";
 import { StateType, connect, useDispatch } from "../state";
 import { createSelector } from "reselect";
 import { FAVORITE } from "./_actions/FAVORITE";
+import { ChartType } from "./_types/ChartType";
+import useRefreshTokenChart from "./_hooks/useRefreshTokenChart";
+import { SET_TOKEN_CHART } from "./_actions/SET_TOKEN_CHART";
+import { getChartDataTime } from "./_helpers/getChartDataTime";
 
 type Props = {
   token: TokenInfoType
 }
 
 type StateProps = {
-  isFavorited: boolean
-}
-
-const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) => fetch(input, init).then(res => res.json())
-
-type MarketChartData = {
-  prices: GraphDataPointType[]
+  isFavorited: boolean,
+  activeChart: ChartType,
+  chartData?: GraphDataPointType[]
 }
 
 
 function TokenDetails(props: Props & StateProps) {
+  const tokenId = props.token.id;
+  const { isFavorited, activeChart, chartData } = props;
   const dispatch = useDispatch();
-  const [activeChart, setActiveChart] = useState<string>("1D");
-  const { data: minuteData } = useSWR<MarketChartData>(`https://pro-api.coingecko.com/api/v3/coins/${props.token.id}/market_chart?vs_currency=usd&days=1&x_cg_pro_api_key=CG-YrhgwDXiLCa2Euwf1EqRYWNg`, fetcher, {
-    revalidateOnMount: true
-  });
-  const { data: hourData } = useSWR<MarketChartData>(`https://pro-api.coingecko.com/api/v3/coins/${props.token.id}/market_chart?vs_currency=usd&days=90&x_cg_pro_api_key=CG-YrhgwDXiLCa2Euwf1EqRYWNg`, fetcher, {
-    revalidateOnMount: true
-  });
-  const { data: dailyData } = useSWR<MarketChartData>(`https://pro-api.coingecko.com/api/v3/coins/${props.token.id}/market_chart?vs_currency=usd&days=max&x_cg_pro_api_key=CG-YrhgwDXiLCa2Euwf1EqRYWNg`, fetcher, {
-    revalidateOnMount: true
-  });
+
+  useRefreshTokenChart(tokenId, activeChart);
 
   const currentPrice = formatPrice(props.token.current_price);
   const changePercent = formatPrice(props.token.price_change_percentage_24h);
   const changeCurrency = formatPrice(props.token.price_change_24h);
 
-  const data = filterChartData(activeChart, minuteData?.prices, hourData?.prices, dailyData?.prices);
+  const data = filterChartData(activeChart, chartData);
 
   const arrow = (props.token.price_change_percentage_24h ?? 0) + 0 > 0 ? "↗" : "↘";
   const color = (props.token.price_change_percentage_24h ?? 0) + 0 > 0 ? green : red;
 
   const isUp = (data?.points[0][1] ?? 0) < (data?.points[(data?.points.length ?? 1) - 1][1] ?? 0);
   const colorButton = isUp ? green : red;
-
 
   return (
     <>
@@ -107,17 +100,17 @@ function TokenDetails(props: Props & StateProps) {
         <View
           onClick={() => dispatch(FAVORITE({
             assetId: props.token.id,
-            isFavorited: !props.isFavorited
+            isFavorited: !isFavorited
           }))}
           style={{
-            cursor:"pointer",
+            cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "right",
             paddingRight: "0px"
           }}
         >
-          <Star key={colorButton+props.isFavorited} color={colorButton} isFilled={props.isFavorited} strokeWidth={1} size={30}></Star>
+          <Star key={colorButton + isFavorited} color={colorButton} isFilled={isFavorited} strokeWidth={1} size={30}></Star>
         </View>
       </View>
       {data ? (
@@ -129,42 +122,48 @@ function TokenDetails(props: Props & StateProps) {
             title={`${props.token.symbol.toUpperCase()} ${activeChart}`}
             ticks={data.labels}
           />
-          <View
-            style={{
-              padding: "8px 16px",
-              display: "flex",
-              justifyContent: "space-between"
-            }}
-          >
-            {charts.map((chart, i) => (
-              <Button
-                onClick={() => setActiveChart(chart)}
-                style={{
-                  color: "black",
-                  borderRadius: "14px",
-                  padding: "0px 8px",
-                  minWidth: "auto",
-                  width: "auto",
-                  border: chart === activeChart ? `4px solid ${colorButton}` : "4px solid transparent"
-                }}
-              >
-                {chart}
-              </Button>
-            ))}
-          </View>
+
         </>
       ) : (
         <View
           style={{
-            padding: "0px 16px",
+            padding: "0 16px",
             position: "relative",
             width: "343px",
-            height: "250px"
+            height: "274px"
           }}
         >
           <CenteredLoader />
         </View>
       )}
+      <View
+        style={{
+          padding: "8px 16px",
+          display: "flex",
+          justifyContent: "space-between"
+        }}
+      >
+        {charts.map((chart, i) => (
+          <Button
+            onClick={() => dispatch(SET_TOKEN_CHART({
+              tokenId,
+              chartData: {
+                activeChart: chart
+              }
+            }))}
+            style={{
+              color: "black",
+              borderRadius: "14px",
+              padding: "0px 8px",
+              minWidth: "auto",
+              width: "auto",
+              border: chart === activeChart ? `4px solid ${colorButton}` : "4px solid transparent"
+            }}
+          >
+            {chart}
+          </Button>
+        ))}
+      </View>
       <View
         style={{
           display: "flex",
@@ -233,7 +232,16 @@ function AssetFact({ label, value }: { label: string, value: string }) {
 
 const selector = createSelector(
   (state: StateType, props: Props) => state.favorites[props.token.id],
-  (isFavorited) => ({ isFavorited })
+  (state: StateType, props: Props) => {
+    const tokenChart = state.tokenCharts[props.token.id] ?? {};
+    return tokenChart.activeChart ?? "1D";
+  },
+  (state: StateType, props: Props) => {
+    const tokenChart = state.tokenCharts[props.token.id] ?? {};
+    const activeChart = tokenChart.activeChart ?? "1D"
+    return tokenChart[getChartDataTime(activeChart)];
+  },
+  (isFavorited, activeChart, chartData) => ({ isFavorited, activeChart, chartData })
 )
 
 export default connect<Props, StateProps>(selector)(TokenDetails);

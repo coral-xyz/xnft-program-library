@@ -1,5 +1,5 @@
 import { scaleLinear, scaleTime } from "d3-scale";
-import { line, curveBundle as curveType } from "d3-shape";
+import { line, curveLinear as curveType } from "d3-shape";
 import { GraphDataPointType } from "../_types/GraphDataPointType";
 
 const makeGraph = (data: GraphDataPointType[], width: number, height: number) => {
