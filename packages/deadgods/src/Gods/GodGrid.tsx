@@ -1,11 +1,4 @@
-import {
-  useNavigation,
-  View,
-  Image,
-  Text,
-  Button,
-  Loading,
-} from "react-xnft";
+import { useNavigation, View, Image, Text, Button, Loading } from "react-xnft";
 import { useDegodTokens } from "../utils";
 import { UnlockIcon, LockIcon } from "../utils/icon";
 
@@ -46,15 +39,17 @@ function GodGrid({ staked, unstaked, isDead }: any) {
       <View
         style={{
           display: "flex",
-					flexWrap: 'wrap',
+          flexWrap: "wrap",
         }}
       >
         {gods.map((g) => {
           return (
-        <View style={{
-					marginLeft: "20px",
-					marginTop: "8px",
-				}}>
+            <View
+              style={{
+                marginLeft: "20px",
+                marginTop: "8px",
+              }}
+            >
               <Button
                 key={g.tokenMetaUriData.image}
                 onClick={() => clickGod(g)}

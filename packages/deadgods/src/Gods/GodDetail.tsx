@@ -14,58 +14,60 @@ import { BN } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { THEME } from "../utils/theme";
 import {
-	useFarmer,
+  useFarmer,
   gemFarmClient,
   gemBankClient,
   DEAD_FARM,
   DEAD_BANK,
   PID_GEM_BANK,
-	METADATA_PID,
+  METADATA_PID,
 } from "../utils";
 
 export function GodDetailScreen({ god }) {
   const publicKey = usePublicKey();
   const connection = useConnection();
-	const [farmer, isLoading] = useFarmer();
+  const [farmer, isLoading] = useFarmer();
 
-	//
-	// WARNING: these stake/unstake methods only work for one NFT at at a time right now.
-	//
+  //
+  // WARNING: these stake/unstake methods only work for one NFT at at a time right now.
+  //
   const stake = async () => {
-		if (isLoading) {
-			console.error("cannot stake while the farmer is loading");
-			return;
-		}
+    if (isLoading) {
+      console.error("cannot stake while the farmer is loading");
+      return;
+    }
 
-		// If the farmer account doesn't exist, we need to initialize it for the user.
-		if (!farmer) {
-			// TODO.
-			console.error("This xNFT doesn't currently support farm account initialization. Please submit a PR!");
-			return;
-		}
-		// If the user is already staked, use the simplified flash deposit.
-		else if (farmer.state.staked) {
-			await withAccounts("stake-flash");
-		}
-		// If the user is not already staked, then need to start staking.
-		else {
-			await withAccounts('stake');
-		}
+    // If the farmer account doesn't exist, we need to initialize it for the user.
+    if (!farmer) {
+      // TODO.
+      console.error(
+        "This xNFT doesn't currently support farm account initialization. Please submit a PR!"
+      );
+      return;
+    }
+    // If the user is already staked, use the simplified flash deposit.
+    else if (farmer.state.staked) {
+      await withAccounts("stake-flash");
+    }
+    // If the user is not already staked, then need to start staking.
+    else {
+      await withAccounts("stake");
+    }
   };
   const unstake = async () => {
-		if (isLoading) {
-			console.error("cannot unstake while the farmer is loading");
-			return;
-		}
+    if (isLoading) {
+      console.error("cannot unstake while the farmer is loading");
+      return;
+    }
 
-		// If unstaking the last NFT, then we are completely unstaked. Don't bother restaking.
-		if (farmer.gemsStaked.toNumber() === 1) {
-			await withAccounts("unstake-no-restake");
-		}
-		// If there are more NFTS still staked, then you need to restake.
-		else {
-			await withAccounts('unstake');
-		}
+    // If unstaking the last NFT, then we are completely unstaked. Don't bother restaking.
+    if (farmer.gemsStaked.toNumber() === 1) {
+      await withAccounts("unstake-no-restake");
+    }
+    // If there are more NFTS still staked, then you need to restake.
+    else {
+      await withAccounts("unstake");
+    }
   };
 
   const withAccounts = async (method: string) => {
@@ -111,7 +113,7 @@ export function GodDetailScreen({ god }) {
         new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s").toBuffer(),
         gemMint.toBuffer(),
       ],
-      METADATA_PID,
+      METADATA_PID
     );
     const [mintWhitelistProof] = await PublicKey.findProgramAddress(
       [Buffer.from("whitelist"), bank.toBuffer(), gemMint.toBuffer()],
@@ -410,7 +412,7 @@ export function GodDetailScreen({ god }) {
             marginTop: "24px",
             marginBottom: "24px",
             backgroundColor: THEME.colors.unstake,
-						color: THEME.colors.text,
+            color: THEME.colors.text,
           }}
           onClick={() => unstake()}
         >
@@ -427,7 +429,7 @@ export function GodDetailScreen({ god }) {
             marginTop: "24px",
             marginBottom: "24px",
             backgroundColor: THEME.colors.stake,
-						color: THEME.colors.text,
+            color: THEME.colors.text,
           }}
           onClick={() => stake()}
         >
