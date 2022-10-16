@@ -10,7 +10,7 @@ export function GodsScreen() {
         switch (route.name) {
           case "grid":
             return {
-              title: "My Gods",
+              title: "My DeadGods",
             };
           case "detail":
             return {

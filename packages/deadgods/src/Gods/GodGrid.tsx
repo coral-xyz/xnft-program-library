@@ -4,13 +4,10 @@ import {
   Image,
   Text,
   Button,
-  Stack,
   Loading,
 } from "react-xnft";
 import { useDegodTokens } from "../utils";
 import { UnlockIcon, LockIcon } from "../utils/icon";
-
-const STATS = "https://api.degods.com/v1/stats";
 
 export function GodGridScreen() {
   const isDead = false;
@@ -43,20 +40,21 @@ function GodGrid({ staked, unstaked, isDead }: any) {
     <View
       style={{
         marginRight: "20px",
-        marginLeft: "20px",
         marginBottom: "38px",
       }}
     >
       <View
         style={{
-          marginTop: "8px",
           display: "flex",
-          justifyContent: "space-between",
+					flexWrap: 'wrap',
         }}
       >
         {gods.map((g) => {
           return (
-            <View>
+        <View style={{
+					marginLeft: "20px",
+					marginTop: "8px",
+				}}>
               <Button
                 key={g.tokenMetaUriData.image}
                 onClick={() => clickGod(g)}
@@ -114,23 +112,6 @@ function GodGrid({ staked, unstaked, isDead }: any) {
             </View>
           );
         })}
-      </View>
-      <View
-        style={{
-          marginTop: "24px",
-          marginBottom: "24px",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: "12px",
-            textAlign: "center",
-          }}
-        >
-          👋 Browse Magic Eden
-        </Text>
       </View>
     </View>
   );

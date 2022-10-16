@@ -14,6 +14,7 @@ import { BN } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { THEME } from "../utils/theme";
 import {
+	useFarmer,
   gemFarmClient,
   gemBankClient,
   DEAD_FARM,
@@ -25,13 +26,46 @@ import {
 export function GodDetailScreen({ god }) {
   const publicKey = usePublicKey();
   const connection = useConnection();
+	const [farmer, isLoading] = useFarmer();
+
+	//
+	// WARNING: these stake/unstake methods only work for one NFT at at a time right now.
+	//
   const stake = async () => {
-    //		await withAccounts('stake');
-    await withAccounts("stake-flash");
+		if (isLoading) {
+			console.error("cannot stake while the farmer is loading");
+			return;
+		}
+
+		// If the farmer account doesn't exist, we need to initialize it for the user.
+		if (!farmer) {
+			// TODO.
+			console.error("This xNFT doesn't currently support farm account initialization. Please submit a PR!");
+			return;
+		}
+		// If the user is already staked, use the simplified flash deposit.
+		else if (farmer.state.staked) {
+			await withAccounts("stake-flash");
+		}
+		// If the user is not already staked, then need to start staking.
+		else {
+			await withAccounts('stake');
+		}
   };
   const unstake = async () => {
-    // await withAccounts('unstake');
-    await withAccounts("unstake-no-restake");
+		if (isLoading) {
+			console.error("cannot unstake while the farmer is loading");
+			return;
+		}
+
+		// If unstaking the last NFT, then we are completely unstaked. Don't bother restaking.
+		if (farmer.gemsStaked.toNumber() === 1) {
+			await withAccounts("unstake-no-restake");
+		}
+		// If there are more NFTS still staked, then you need to restake.
+		else {
+			await withAccounts('unstake');
+		}
   };
 
   const withAccounts = async (method: string) => {

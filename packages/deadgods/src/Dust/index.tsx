@@ -1,7 +1,7 @@
 import { usePublicKey, View, Text, Button, Stack } from "react-xnft";
 import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
-import { useEstimatedRewards, gemFarmClient, DEAD_FARM } from "../utils";
+import { useEstimatedRewards, useStats, gemFarmClient, DEAD_FARM } from "../utils";
 import { THEME } from "../utils/theme";
 
 export function DustScreen() {
@@ -55,18 +55,19 @@ export function DustScreen() {
 }
 
 function ClaimDust() {
-  const estimatedRewards = useEstimatedRewards();
   return (
     <View>
       <View>
-        <Header isDead={true} estimatedRewards={estimatedRewards} />
+        <Header isDead={true} />
       </View>
     </View>
   );
 }
 
-function Header({ isDead, estimatedRewards }: any) {
+function Header({ isDead }: any) {
+	const stats = useStats();
   const publicKey = usePublicKey();
+	const [estimatedRewards, setEstimatedRewards] = useEstimatedRewards();
 
   const claimDust = () => {
     (async () => {
@@ -123,8 +124,9 @@ function Header({ isDead, estimatedRewards }: any) {
               owner: publicKey,
             }),
           })
-          .transaction();
+																	 .transaction();
         const signature = await window.xnft.send(tx);
+				setEstimatedRewards('0');
         console.log("tx signature", signature);
       } catch (err) {
         console.log("err here", err);
@@ -160,7 +162,7 @@ function Header({ isDead, estimatedRewards }: any) {
           }}
         >
           {estimatedRewards} DUST
-        </Text>
+    </Text>
         <Text
           style={{
             marginTop: "12px",
@@ -168,7 +170,7 @@ function Header({ isDead, estimatedRewards }: any) {
             textAlign: "center",
           }}
         >
-          {isDead ? 15 : 5} $DUST/day
+          {stats ? stats.floorPrice/10**9 : ''} $SOL Floor
         </Text>
       </View>
       <View

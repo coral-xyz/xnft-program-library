@@ -12,6 +12,17 @@ ReactXnft.events.on("connect", () => {
   fetchDegodTokens(window.xnft.publicKey, window.xnft.connection);
 });
 
+export function useStats(): any  {
+	const STATS = "https://api.degods.com/v1/stats";
+	const [stats, setStats] = useState(null);
+	useEffect(() => {
+		fetch(STATS).then(resp => {
+			resp.json().then(r => setStats(r));
+		});
+	});
+	return stats;
+}
+
 export function useDegodTokens() {
   const publicKey = usePublicKey();
   const connection = useConnection();
@@ -22,8 +33,15 @@ export function useDegodTokens() {
   useEffect(() => {
     (async () => {
       setTokenAccounts(null);
-      const res = await fetchDegodTokens(publicKey, connection);
-      setTokenAccounts(res);
+			const fetchAndSet = async () => {
+				const res = await fetchDegodTokens(publicKey, connection);
+				setTokenAccounts(res);
+			};
+
+			// Poll every 10 seconds for the latest tokens.
+			fetchAndSet();
+			setInterval(() => fetchAndSet(), 10000);
+
     })();
   }, [publicKey, connection]);
   if (tokenAccounts === null) {
@@ -37,43 +55,72 @@ export function useDegodTokens() {
   };
 }
 
-export function useEstimatedRewards() {
-  const publicKey = usePublicKey();
+export function useEstimatedRewards(): [string, (e: string) => void] {
+	const [farmer, isLoading] = useFarmer(false);
   const [estimatedRewards, setEstimatedRewards] = useState("");
 
   useEffect(() => {
-    const client = gemFarmClient();
-    (async () => {
-      try {
-        const [farmerPubkey] = await PublicKey.findProgramAddress(
-          [Buffer.from("farmer"), DEAD_FARM.toBuffer(), publicKey.toBuffer()],
-          client.programId
-        );
-        const farmer = await client.account.farmer.fetch(farmerPubkey);
-        const rewards = getEstimatedRewards(
-          farmer.rewardA,
-          farmer.gemsStaked,
-          Date.now(),
-          true
-        );
-        setEstimatedRewards(rewards.toFixed(4));
-        const interval = setInterval(() => {
-          const newRewards = getEstimatedRewards(
-            farmer.rewardA,
-            farmer.gemsStaked,
-            Date.now(),
-            true
-          );
-          setEstimatedRewards(newRewards.toFixed(4));
-        }, 1000);
-        return () => clearInterval(interval);
-      } catch (err) {
-        console.error(err);
-      }
-    })();
-  }, []);
+		// @ts-ignore
+		(async () => {
+			if (isLoading) {
+				return;
+			}
+			try {
+				const rewards = getEstimatedRewards(
+					farmer.rewardA,
+					farmer.gemsStaked,
+					Date.now(),
+					true
+				);
+				setEstimatedRewards(rewards.toFixed(4));
+				const interval = setInterval(() => {
+					const newRewards = getEstimatedRewards(
+						farmer.rewardA,
+						farmer.gemsStaked,
+						Date.now(),
+						true
+					);
+					setEstimatedRewards(newRewards.toFixed(4));
+				}, 1000);
+				return () => clearInterval(interval);
+			} catch (err) {
+				console.error(err);
+			}
+		})();
+  }, [farmer, isLoading]);
 
-  return estimatedRewards;
+  return [estimatedRewards, setEstimatedRewards];
+}
+
+// @param withReload is true if we want to poll for a constant refresh.
+export function useFarmer(withReload = true) {
+  const publicKey = usePublicKey();
+	const [[farmer, isLoading], setFarmerIsLoading] = useState<any>([[null, true]]);
+
+	useEffect(() => {
+		const fetchFarmer = async () => {
+			try {
+				const client = gemFarmClient();
+				const [farmerPubkey] = await PublicKey.findProgramAddress(
+					[Buffer.from("farmer"), DEAD_FARM.toBuffer(), publicKey.toBuffer()],
+					client.programId
+				);
+				const farmer = await client.account.farmer.fetch(farmerPubkey);
+				setFarmerIsLoading([farmer, false]);
+			} catch (err) {
+				console.error(err);
+				setFarmerIsLoading([null, false]);
+			}
+		};
+
+		// Fetch the farmer account every 10 seconds to get state updates.
+		fetchFarmer();
+		if (withReload) {
+			setInterval(() => fetchFarmer(), 10*1000);
+		}
+	}, []);
+
+	return [farmer, isLoading];
 }
 
 export function gemBankClient(): Program<GemBank> {
@@ -167,9 +214,15 @@ async function fetchStakedTokenAccountsInner(
   );
   const newResp = tokenAccounts.nftMetadata
     .map((m) => m[1])
-    .filter((t) => !t.tokenMetaUriData.name.startsWith("DegodsGiveaway") && !t.tokenMetaUriData.name.startsWith('Rare'));
-
-	console.log("NEW RESP HERE", newResp);
+    .filter((t) =>
+			t.metadata
+			&& t.metadata.data.creators
+			&& t.metadata.data.creators.find(
+				c =>
+					c.verified &&
+					c.address==='AxFuniPo7RaDgPH6Gizf4GZmLQFc4M5ipckeeZfkrPNn'
+			) !== undefined
+					 );
 
   return newResp;
 }
