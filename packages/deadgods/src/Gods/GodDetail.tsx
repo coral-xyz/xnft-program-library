@@ -1,6 +1,7 @@
 import {
   usePublicKey,
   useConnection,
+	useNavigation,
   View,
   Image,
   Text,
@@ -24,6 +25,7 @@ import {
 } from "../utils";
 
 export function GodDetailScreen({ god }) {
+	const nav = useNavigation();
   const publicKey = usePublicKey();
   const connection = useConnection();
   const [farmer, isLoading] = useFarmer();
@@ -53,6 +55,8 @@ export function GodDetailScreen({ god }) {
     else {
       await withAccounts("stake");
     }
+
+		nav.pop();
   };
   const unstake = async () => {
     if (isLoading) {
@@ -68,6 +72,8 @@ export function GodDetailScreen({ god }) {
     else {
       await withAccounts("unstake");
     }
+
+		nav.pop();
   };
 
   const withAccounts = async (method: string) => {

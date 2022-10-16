@@ -23,7 +23,7 @@ export function useStats(): any {
     fetch(STATS).then((resp) => {
       resp.json().then((r) => setStats(r));
     });
-  });
+  }, []);
   return stats;
 }
 
@@ -50,11 +50,12 @@ export function useDegodTokens() {
   if (tokenAccounts === null) {
     return null;
   }
+
   return {
-    dead: tokenAccounts[0].map((t) => ({ ...t, isStaked: true })),
-    alive: tokenAccounts[1].map((t) => ({ ...t, isStaked: true })),
-    deadUnstaked: tokenAccounts[2].map((t) => ({ ...t, isStaked: false })),
-    aliveUnstaked: tokenAccounts[3].map((t) => ({ ...t, isStaked: false })),
+    dead: tokenAccounts[0].map((t) => ({ ...t, isStaked: true })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
+    alive: tokenAccounts[1].map((t) => ({ ...t, isStaked: true })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
+		deadUnstaked: tokenAccounts[2].map((t) => ({ ...t, isStaked: false })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
+    aliveUnstaked: tokenAccounts[3].map((t) => ({ ...t, isStaked: false })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
   };
 }
 
@@ -166,16 +167,16 @@ async function fetchStakedTokenAccounts(
 ): Promise<any> {
   const url = connection.rpcEndpoint;
   const cacheKey = `${url}:${isDead}:${wallet.toString()}`;
-  const val = LocalStorage.get(cacheKey);
+  const val = await LocalStorage.get(cacheKey);
 
   //
-  // Only fetch this once a minute.
+  // Only fetch this once every 10 seconds.
   //
   if (val) {
     const resp = JSON.parse(val);
     if (
       Object.keys(resp.value).length > 0 &&
-      Date.now() - resp.ts < 1000 * 60
+      Date.now() - resp.ts < 1000 * 10
     ) {
       return await resp.value;
     }
