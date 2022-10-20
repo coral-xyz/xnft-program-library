@@ -12,11 +12,9 @@ import { IDL as IDL_GEM_FARM, GemFarm } from "./idl-gem-farm";
 //
 // On connection to the host environment, warm the cache.
 //
-window.addEventListener("load", () => {
-  window.xnft.solana.addListener("connect", () => {
-    fetchDegodTokens(window.xnft.solana.publicKey, window.xnft.solana.connection);
-  });
-})
+ReactXnft.events.on(ReactXnft.SOLANA_CONNECT, () => {
+  fetchDegodTokens(window.xnft.solana.publicKey, window.xnft.solana.connection);
+});
 
 export function useStats(): any {
   const STATS = "https://api.degods.com/v1/stats";
