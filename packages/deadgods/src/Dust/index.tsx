@@ -130,7 +130,7 @@ function Header({ isDead }: any) {
             }),
           })
           .transaction();
-        const signature = await window.xnft.send(tx);
+        const signature = await window.xnft.solana.send(tx);
         setEstimatedRewards("0");
         console.log("tx signature", signature);
       } catch (err) {

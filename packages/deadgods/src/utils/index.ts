@@ -13,7 +13,7 @@ import { IDL as IDL_GEM_FARM, GemFarm } from "./idl-gem-farm";
 // On connection to the host environment, warm the cache.
 //
 ReactXnft.events.on("connect", () => {
-  fetchDegodTokens(window.xnft.publicKey, window.xnft.connection);
+  fetchDegodTokens(window.xnft.publicKeys["solana"], window.xnft.connections["solana"]);
 });
 
 export function useStats(): any {
@@ -153,7 +153,7 @@ async function fetchTokenAccounts(
   wallet: PublicKey,
   connection: Connection
 ): Promise<any> {
-  const resp = await window.xnft.connection.customSplTokenAccounts(wallet);
+  const resp = await window.xnft.connections["solana"].customSplTokenAccounts(wallet);
   const tokens = resp.nftMetadata
     .map((m) => m[1])
     .filter((t) => t.tokenMetaUriData.name.startsWith("DeGod"));
@@ -215,7 +215,7 @@ async function fetchStakedTokenAccountsInner(
     [vaultPubkey.toBuffer()],
     PID_GEM_BANK
   );
-  const tokenAccounts = await window.xnft.connection.customSplTokenAccounts(
+  const tokenAccounts = await window.xnft.connections["solana"].customSplTokenAccounts(
     vaultAuthority
   );
   const newResp = tokenAccounts.nftMetadata
