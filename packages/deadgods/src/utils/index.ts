@@ -3,6 +3,7 @@ import ReactXnft, {
   LocalStorage,
   usePublicKey,
   useConnection,
+  SOLANA_CONNECT
 } from "react-xnft";
 import { PublicKey, Connection } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
@@ -12,7 +13,7 @@ import { IDL as IDL_GEM_FARM, GemFarm } from "./idl-gem-farm";
 //
 // On connection to the host environment, warm the cache.
 //
-ReactXnft.events.on(ReactXnft.SOLANA_CONNECT, () => {
+ReactXnft.events.on(SOLANA_CONNECT, () => {
   fetchDegodTokens(window.xnft.solana.publicKey, window.xnft.solana.connection);
 });
 
