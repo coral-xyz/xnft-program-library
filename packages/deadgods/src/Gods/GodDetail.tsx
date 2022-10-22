@@ -369,7 +369,7 @@ export function GodDetailScreen({ god }) {
     const { blockhash } = await connection!.getLatestBlockhash("recent");
     tx.recentBlockhash = blockhash;
 
-    const signature = await window.xnft.send(tx);
+    const signature = await window.xnft.solana.send(tx);
     console.log("tx signature", signature);
   };
 

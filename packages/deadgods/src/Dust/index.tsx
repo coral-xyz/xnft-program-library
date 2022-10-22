@@ -130,7 +130,7 @@ function Header({ isDead }: any) {
             }),
           })
           .transaction();
-        const signature = await window.xnft.send(tx);
+        const signature = await window.xnft.solana.send(tx);
         setEstimatedRewards("0");
         console.log("tx signature", signature);
       } catch (err) {
@@ -193,7 +193,7 @@ function Header({ isDead }: any) {
           onClick={claimDust}
           style={{
             flex: 1,
-            background: "#FFEFEB",
+            backgroundColor: "#FFEFEB",
             color: "#6100FF",
             border: "1px solid #000000",
             boxShadow: "4px 3px 0px #6100FF",
