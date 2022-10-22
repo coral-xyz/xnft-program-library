@@ -24,6 +24,9 @@ export function App() {
                 return <Tab.Icon element={<GodsIcon fill={color} />} />;
               }
             },
+            tabBarStyle: {
+              backgroundColor: "pink",
+            },
           };
         }}
       >

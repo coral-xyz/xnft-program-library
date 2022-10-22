@@ -52,10 +52,18 @@ export function useDegodTokens() {
   }
 
   return {
-    dead: tokenAccounts[0].map((t) => ({ ...t, isStaked: true })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
-    alive: tokenAccounts[1].map((t) => ({ ...t, isStaked: true })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
-		deadUnstaked: tokenAccounts[2].map((t) => ({ ...t, isStaked: false })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
-    aliveUnstaked: tokenAccounts[3].map((t) => ({ ...t, isStaked: false })).sort((a,b) => a.publicKey.localeCompare(b.publicKey)),
+    dead: tokenAccounts[0]
+      .map((t) => ({ ...t, isStaked: true }))
+      .sort((a, b) => a.publicKey.localeCompare(b.publicKey)),
+    alive: tokenAccounts[1]
+      .map((t) => ({ ...t, isStaked: true }))
+      .sort((a, b) => a.publicKey.localeCompare(b.publicKey)),
+    deadUnstaked: tokenAccounts[2]
+      .map((t) => ({ ...t, isStaked: false }))
+      .sort((a, b) => a.publicKey.localeCompare(b.publicKey)),
+    aliveUnstaked: tokenAccounts[3]
+      .map((t) => ({ ...t, isStaked: false }))
+      .sort((a, b) => a.publicKey.localeCompare(b.publicKey)),
   };
 }
 
@@ -153,7 +161,9 @@ async function fetchTokenAccounts(
   wallet: PublicKey,
   connection: Connection
 ): Promise<any> {
-  const resp = await window.xnft.solana.connection.customSplTokenAccounts(wallet);
+  const resp = await window.xnft.solana.connection.customSplTokenAccounts(
+    wallet
+  );
   const tokens = resp.nftMetadata
     .map((m) => m[1])
     .filter((t) => t.tokenMetaUriData.name.startsWith("DeGod"));
@@ -215,9 +225,8 @@ async function fetchStakedTokenAccountsInner(
     [vaultPubkey.toBuffer()],
     PID_GEM_BANK
   );
-  const tokenAccounts = await window.xnft.solana.connection.customSplTokenAccounts(
-    vaultAuthority
-  );
+  const tokenAccounts =
+    await window.xnft.solana.connection.customSplTokenAccounts(vaultAuthority);
   const newResp = tokenAccounts.nftMetadata
     .map((m) => m[1])
     .filter(
